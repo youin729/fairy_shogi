@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Document</title>
+    <link type="text/css" rel="stylesheet" media="all" href="./public/style.css"/>
+    <link type="text/css" rel="stylesheet" media="all" href="./public/nav.css"/>
+</head>
+<body>
+    <nav>
+        <header>
+            <h1>FairyChess.com</h1>
+        </header>
+        <ul>
+            <li>
+                <a href="#">
+                    <div class="fa fa-home"></div>
+                    Home
+                </a>
+            </li>
+            <li class="sub-menu">
+                <a href="#">
+                    <div class="fa fa-book"></div>
+                    About
+                    <div class="fa fa-angle-down right"></div>
+                </a>
+                <ul style="display: none;">
+                    <li>
+                        <a href="#">Our Team</a>
+                    </li>
+                    <li>
+                        <a href="#">What We Do</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="fa fa-file-text"></div>
+                    Portfolio
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <div class="fa fa-envelope"></div>
+                    Contact
+                </a>
+            </li>
+        </ul>
+        <div class="info">Cupcake ipsum dolor sit amet biscuit. Tootsie roll unerdwear.com powder tiramisu sugar plum marzipan cheesecake toffee wafer. Pie jelly icing bear claw gummies icing jelly beans pie halvah.</div>
+        <footer>
+            <p>Copyright © AndyTran.me</p>
+        </footer>
+    </nav>
+    <div class="game">
+        <div id="app"></div>
+
+        <div class="control">
+            <div class="about-player">
+                <img width="40" height="40" src="./public/demo/user2.png" alt="プレイヤー2">
+                <div class="user-tagline">
+                    <span>プレイヤー2</span>
+                </div>
+            </div>
+            <ul class="record">
+                
+            </ul>
+            <div class="about-player">
+                <img width="40" height="40" src="./public/demo/user1.png" alt="プレイヤー1">
+                <div class="user-tagline">
+                    <span>プレイヤー1</span>
+                </div>
+            </div>
+        </div>
+        <div class="add">
+            
+        </div>
+    </div>
+    <script src="./dist/main.js"></script>
+</body>
+</html>
