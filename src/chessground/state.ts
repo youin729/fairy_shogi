@@ -10,20 +10,20 @@ export interface State {
     pieces: cg.Pieces;
     orientation: cg.Color; // board orientation. white | black
     turnColor: cg.Color; // turn to play. white | black
-    lastMove?: cg.Key[]; // squares part of the last move ["c3"; "c4"]
     check?: cg.Key; // square currently in check "a2"
+    lastMove?: cg.Key[]; // squares part of the last move ["c3"; "c4"]
     selected?: cg.Key; // square currently selected "a1"
     coordinates: boolean; // include coords attributes
     viewOnly: boolean; // don't bind events: the user will never be able to move pieces around
-
+    resizable: boolean; // listens to chessground.resize on document.body to clear bounds cache
+    highlight: {
+        lastMove: boolean; // add last-move class to squares
+        check: boolean; // add check class to squares
+    };
     animation: {
         enabled: boolean;
         duration: number;
         current?: AnimCurrent;
-    };
-    highlight: {
-        lastMove: boolean; // add last-move class to squares
-        check: boolean; // add check class to squares
     };
     draggable: {
       enabled: boolean; // allow moves & premoves to use drag'n drop
@@ -33,13 +33,6 @@ export interface State {
       showGhost: boolean; // show ghost of piece being dragged
       deleteOnDropOff: boolean; // delete a piece when it is dropped off the board
       current?: DragCurrent;
-    };
-    
-    stats: {
-        // was last piece dragged or clicked?
-        // needs default to false for touch
-        dragged: boolean,
-        ctrlKey?: boolean
     };
     movable: {
       free: boolean; // all moves are valid - board editor
@@ -52,10 +45,6 @@ export interface State {
       };
       rookCastle: boolean // castle by moving the king to the rook
     };
-    selectable: {
-      // disable to enforce dragging over click-click move
-      enabled: boolean
-    };
     premovable: {
         enabled: boolean; // allow premoves for color that can not move
         showDests: boolean; // whether to add the premove-dest class on squares
@@ -67,7 +56,6 @@ export interface State {
           unset?: () => void;  // called after the premove has been unset
         }
     };
-
     predroppable: {
         enabled: boolean; // allow predrops for color that can not move
         current?: { // current saved predrop {role: 'knight'; key: 'e4'}
@@ -79,6 +67,20 @@ export interface State {
           unset?: () => void; // called after the predrop has been unset
         }
     };
+    dropmode: {
+      active: boolean;
+      piece?: cg.Piece;
+    }
+    selectable: {
+      // disable to enforce dragging over click-click move
+      enabled: boolean
+    };
+    stats: {
+        // was last piece dragged or clicked?
+        // needs default to false for touch
+        dragged: boolean,
+        ctrlKey?: boolean
+    };
     events: {
       change?: () => void; // called after the situation changes on the board
       // called after a piece has been moved.
@@ -88,16 +90,10 @@ export interface State {
       select?: (key: cg.Key) => void // called when a square is selected
       insert?: (elements: cg.Elements) => void; // when the board DOM has been (re)inserted
     };
-    dropmode: {
-      active: boolean;
-      piece?: cg.Piece;
-    }
     drawable: Drawable,
     dom: cg.Dom,
     hold: cg.Timer
 }
-
-
 
 export function defaults(): Partial<State> {
     return {
@@ -166,7 +162,7 @@ export function defaults(): Partial<State> {
               paleGrey: { key: 'pgr', color: '#4a4a4a', opacity: 0.35, lineWidth: 15 }
             },
             pieces: {
-              baseUrl: 'https://lichess1.org/assets/piece/cburnett/'
+              baseUrl: ''
             },
             prevSvgHash: ''
         },

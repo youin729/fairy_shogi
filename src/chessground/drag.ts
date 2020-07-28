@@ -1,9 +1,9 @@
-import { State } from './state'
-import * as board from './board'
-import * as util from './util'
-import * as cg from './types'
-import { clear as drawClear } from './draw'
-import { anim } from './anim'
+import { State } from './state';
+import * as board from './board';
+import * as util from './util';
+import * as cg from './types';
+import { clear as drawClear } from './draw';
+import { anim } from './anim';
 
 export interface DragCurrent {
     orig: cg.Key; // orig key of dragging piece
@@ -195,21 +195,7 @@ function processDrag(s: State): void {
       processDrag(s);
     });
 }
-/*
-function computeSquareBounds(key: cg.Key, asWhite: boolean, bounds: ClientRect) {
-    const pos = util.key2pos(key);
-    if (!asWhite) {
-      pos[0] = 10 - pos[0];
-      pos[1] = 10 - pos[1];
-    }
-    return {
-      left: bounds.left + bounds.width * (pos[0] - 1) / 9,
-      top: bounds.top + bounds.height * (8 - pos[1]) / 9,
-      width: bounds.width / 9,
-      height: bounds.height / 9
-    };
-}
-*/
+
 function computeSquareBounds(key: cg.Key, asWhite: boolean, bounds: ClientRect) {
     const pos = util.key2pos(key);
     if (!asWhite) {

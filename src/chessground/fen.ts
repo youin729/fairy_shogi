@@ -199,6 +199,16 @@ export function chushogi_read(): cg.Pieces {
     color: 'white' as cg.Color
   };
 
+  //////// 5th row ////////
+  pieces[pos2key([4,5])] = {
+    role: '3',
+    color: 'white' as cg.Color
+  };
+  pieces[pos2key([9,5])] = {
+    role: '3',
+    color: 'white' as cg.Color
+  };
+
   //////// 1st row ////////
   pieces[pos2key([1,12])] = {
     role: '12',
@@ -384,6 +394,16 @@ export function chushogi_read(): cg.Pieces {
     color: 'black' as cg.Color
   };
 
+  //////// 5th row ////////
+  pieces[pos2key([4,8])] = {
+    role: '3',
+    color: 'black' as cg.Color
+  };
+  pieces[pos2key([9,8])] = {
+    role: '3',
+    color: 'black' as cg.Color
+  };
+  
   /*
   pieces[pos2key([col, row])] = {
     role: roles[role],
@@ -393,7 +413,6 @@ export function chushogi_read(): cg.Pieces {
   return pieces;
 }
 
-/*
 export function read(fen: cg.FEN): cg.Pieces {
   if (fen === 'start') fen = initial;
   const pieces: cg.Pieces = {};
@@ -417,7 +436,7 @@ export function read(fen: cg.FEN): cg.Pieces {
           ++col;
           const role = c.toLowerCase();
           pieces[pos2key([col, row])] = {
-            role: roles[role],
+            role: "1",//roles[role],
             color: (c === role ? 'black' : 'white') as cg.Color
           };
         }
@@ -425,7 +444,7 @@ export function read(fen: cg.FEN): cg.Pieces {
   }
   return pieces;
 }
-*/
+
 export function write(pieces: cg.Pieces): cg.FEN {
   return invRanks.map(y => cg.ranks.map(x => {
       const piece = pieces[pos2key([x, y])];

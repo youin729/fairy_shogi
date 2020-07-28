@@ -533,7 +533,7 @@ function diff(a: number, b:number):number {
    * {key:"a2" => cg.Pos:["a3", "a4"]}
    * 
 */
-export function move(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
+export function legalMove(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
 
   //戻り値
   let pos2: cg.Key[] = new Array();

@@ -8,7 +8,6 @@ export const colors: cg.Color[] = ['white', 'black'];
 //export const key2pos = (k: cg.Key) => [k.charCodeAt(0) - 96, k.charCodeAt(1) - 48] as cg.Pos;
 export const key2pos = (k: cg.Key) => [k.charCodeAt(0) - 96, parseInt(k.substr(1))] as cg.Pos;
 
-
 export function memo<A>(f: () => A): cg.Memo<A> {
     let v: A | undefined;
     const ret: any = () => {

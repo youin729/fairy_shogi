@@ -32,7 +32,7 @@ export function bindBoard(s: State): void {
 export function bindDocument(s: State, redrawAll: cg.Redraw): cg.Unbind {
 
   const unbinds: cg.Unbind[] = [];
-/*
+
   if (!s.dom.relative && s.resizable) {
     const onResize = () => {
       s.dom.bounds.clear();
@@ -40,8 +40,7 @@ export function bindDocument(s: State, redrawAll: cg.Redraw): cg.Unbind {
     };
     unbinds.push(unbindable(document.body, 'chessground.resize', onResize));
   }
-*/
-  //if (!s.viewOnly) {
+  if (!s.viewOnly) {
 
     const onmove: MouchBind = dragOrDraw(s, drag.move, draw.move);
     const onend: MouchBind = dragOrDraw(s, drag.end, draw.end);
@@ -52,7 +51,7 @@ export function bindDocument(s: State, redrawAll: cg.Redraw): cg.Unbind {
     const onScroll = () => s.dom.bounds.clear();
     unbinds.push(unbindable(window, 'scroll', onScroll, { passive: true }));
     unbinds.push(unbindable(window, 'resize', onScroll, { passive: true }));
-  //}
+  }
 
   return () => unbinds.forEach(f => f());
 }
