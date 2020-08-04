@@ -1,5 +1,6 @@
 import * as util from './util'
 import * as cg from './types'
+import { State } from './state';
 
 type Mobility = (x1:number, y1:number, x2:number, y2:number) => boolean;
 
@@ -533,7 +534,7 @@ function diff(a: number, b:number):number {
    * {key:"a2" => cg.Pos:["a3", "a4"]}
    * 
 */
-export function legalMove(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
+function legalMove(pieces: cg.Pieces, key: cg.Key, premove?: boolean): cg.Key[]{
 
   //戻り値
   let pos2: cg.Key[] = new Array();
@@ -561,7 +562,7 @@ export function legalMove(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
             let dest_key = util.pos2key([xx, yy]);
             let target_piece = pieces[dest_key];
             //味方の駒でなければ
-            if(!target_piece || target_piece.color !== piece.color){
+            if(!premove && (!target_piece || target_piece.color !== piece.color)){
               pos2.push(dest_key);
             }
         }
@@ -580,7 +581,7 @@ export function legalMove(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
           while(0 <= xx && xx < cg.size && 0 <= yy && yy < cg.size){
             let dest_key = util.pos2key([xx, yy]);
             let target_piece = pieces[dest_key];
-            if(dest_key){
+            if(!premove && dest_key){
               //味方の駒が射線上にある時
               if(target_piece){
                 if(target_piece.color !== piece.color){
@@ -599,4 +600,24 @@ export function legalMove(pieces: cg.Pieces, key: cg.Key): cg.Key[]{
       }
   }
   return pos2;
+}
+
+export function setMove(state: State): cg.Dests {
+  let dests = {};
+  for(const c of util.allKeys){
+    if(state.pieces[c] && state.pieces[c].color === state.orientation){
+      dests[c] = legalMove(state.pieces, c);
+    }
+  }
+  return dests;
+}
+
+export function setPremove(state: State): cg.Dests {
+  let dests = {};
+  for(const c of util.allKeys){
+    if(state.pieces[c] && state.pieces[c].color === state.orientation){
+      dests[c] = legalMove(state.pieces, c);
+    }
+  }
+  return dests;
 }

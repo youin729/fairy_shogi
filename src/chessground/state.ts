@@ -49,7 +49,7 @@ export interface State {
         enabled: boolean; // allow premoves for color that can not move
         showDests: boolean; // whether to add the premove-dest class on squares
         castle: boolean; // whether to allow king castle premoves
-        dests?: cg.Key[]; // premove destinations for the current selection
+        dests?: cg.Dests; // valid moves. {"a2" ["a3" "a4"] "b1" ["a3" "c3"]}
         current?: cg.KeyPair; // keys of the current saved premove ["e2" "e4"]
         events: {
           set?: (orig: cg.Key, dest: cg.Key, metadata?: cg.SetPremoveMetadata) => void; // called after the premove has been set
@@ -98,8 +98,8 @@ export interface State {
 export function defaults(): Partial<State> {
     return {
         pieces: fen.chushogi_read(),
-        orientation: 'white',
-        turnColor: 'white',
+        orientation: 'black', //if shogi variants 'black' is first
+        turnColor: 'black',
         coordinates: true,
         viewOnly: false,
         highlight: {
@@ -120,7 +120,7 @@ export function defaults(): Partial<State> {
         },
         movable: {
           free: true,
-          color: 'white',
+          color: 'black',
           showDests: true,
           events: {},
           rookCastle: true

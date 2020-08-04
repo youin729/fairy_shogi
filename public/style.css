@@ -150,6 +150,12 @@ coords.files {
     width:100%;
     text-align: center;
 }
+coords.ranks.black{
+    flex-flow: column-reverse;
+}
+coords.files.black {
+    flex-flow: row;
+}
 coords {
     position: absolute;
     display: flex;

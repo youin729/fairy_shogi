@@ -6,6 +6,7 @@ import { DrawShape } from './draw';
 import { cancel as dragCancel } from './drag';
 import { State, defaults } from './state';
 import * as cg from './types';
+import { setMove, setPremove } from './move'
 
 export interface Api {
     // reconfigure the instance. Accepts all config options, except for viewOnly & drawable.visible.
@@ -21,6 +22,9 @@ export interface Api {
   
     // change the view angle 盤を反転させる。
     toggleOrientation(): void;
+
+    //setMove
+    setMove(): void;
   
     // perform a move programmatically プログラムにしたがって駒を動かす
     move(orig: cg.Key, dest: cg.Key): void;
@@ -39,6 +43,9 @@ export interface Api {
   
     // cancel the current premove, if any　プリムーブをキャンセル
     cancelPremove(): void;
+  
+    //setMove
+    setPremove(): void;
   
     // play the current predrop, if any; returns true if premove was played　クレイジーハウス用？プリドロップ
     //playPredrop(validate: (drop: cg.Drop) => boolean): boolean;
@@ -106,7 +113,11 @@ export interface Api {
       move(orig, dest) {
         anim(state => board.baseMove(state, orig, dest), state);
       },
-  
+
+      setMove() {
+        state.movable.dests = setMove(state);
+      },
+
       newPiece(piece, key) {
         anim(state => board.baseNewPiece(state, piece, key), state);
       },
@@ -132,6 +143,11 @@ export interface Api {
       cancelPremove() {
         render(board.unsetPremove, state);
       },
+
+      setPremove() {
+        state.movable.dests = setPremove(state);
+      },
+
   /*
       cancelPredrop() {
         render(board.unsetPredrop, state);

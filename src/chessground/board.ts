@@ -47,10 +47,12 @@ export function selectSquare(state: State, key: cg.Key, force?: boolean): void {
 }
 export function setSelected(state: State, key: cg.Key): void {
     state.selected = key;
+    /*
     if (isPremovable(state, key)) {
       state.premovable.dests = premove(state.pieces, key, state.premovable.castle);
     }
     else state.premovable.dests = undefined;
+    */
 }
 
 export function baseNewPiece(state: State, piece: cg.Piece, key: cg.Key, force?: boolean): boolean {

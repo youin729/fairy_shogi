@@ -3,6 +3,7 @@ import { setCheck, setSelected } from './board'
 import { read as fenRead } from './fen'
 import { DrawShape, DrawBrush } from './draw'
 import * as cg from './types'
+import { setMove, setPremove } from './move'
 
 export interface Config {
   fen?: cg.FEN; // chess position in Forsyth notation
@@ -112,6 +113,9 @@ export function configure(state: State, config: Config) {
   else if (config.lastMove) state.lastMove = config.lastMove;
 
   // fix move/premove dests
+  state.movable.dests = setMove(state);
+  state.premovable.dests = setPremove(state);
+  
   if (state.selected) setSelected(state, state.selected);
 
   // no need for such short animations

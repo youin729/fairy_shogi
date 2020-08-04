@@ -214,6 +214,7 @@ function computeSquareClasses(s: State): SquareClasses {
     addSquare(squares, s.lastMove[i], 'last-move');
   }
   if (s.check && s.highlight.check) addSquare(squares, s.check, 'check');
+
   if (s.selected) {
     addSquare(squares, s.selected, 'selected');
     if (s.movable.showDests) {
@@ -222,7 +223,7 @@ function computeSquareClasses(s: State): SquareClasses {
         k = dests[i];
         addSquare(squares, k, 'move-dest' + (s.pieces[k] ? ' oc' : ''));
       }
-      const pDests = s.premovable.dests;
+      const pDests = s.premovable.dests && s.premovable.dests[s.selected];
       if (pDests) for (i in pDests) {
         k = pDests[i];
         addSquare(squares, k, 'premove-dest' + (s.pieces[k] ? ' oc' : ''));

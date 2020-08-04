@@ -9,6 +9,7 @@ export const initial: cg.FEN = 'rrnbbqkbbnrr/pppppppppppp/0/0/0/0/0/PPPPPPPPPPPP
 //const roles: { [letter: string]: cg.Role } = { p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king' };
 const letters = { pawn: 'p', rook: 'r', knight: 'n', bishop: 'b', queen: 'q', king: 'k' };
 
+//todo. chushogi-fen_readを設定する
 export function chushogi_read(): cg.Pieces {
   const pieces: cg.Pieces = {};
   let role = 'black';

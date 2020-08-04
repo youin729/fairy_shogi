@@ -6,29 +6,12 @@ import render from './render';
 import * as util from './util'
 import * as events from './events';
 import * as svg from './svg';
-import * as cg from './types';
-
-import premove from './premove'
-import { legalMove } from './move'
-
-
-////////// chess ground ////////////
-function move(state: State): cg.Dests {
-  let dests = {};
-  for(const c of util.allKeys){
-    if(state.pieces[c] && state.pieces[c].color === state.orientation){
-      dests[c] = legalMove(state.pieces, c);
-    }
-  }
-  return dests;
-}
 
 export function Chessground(element: HTMLElement, config?: Config): Api {
   const state = defaults() as State;
   
   configure(state, config || {});
 
-  state.movable.dests = move(state);
   function redrawAll() {
 
     let prevUnbind = state.dom && state.dom.unbind;
