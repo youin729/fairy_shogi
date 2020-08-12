@@ -49,7 +49,7 @@ export type Key = 'a0' | 'a1' | 'b1' | 'c1' | 'd1' | 'e1' | 'f1' | 'g1' | 'h1' |
 /////////////////////////////////////
 //export type Role = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 
-export type Role = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21';
+export type Role = number;
 
 export type Color = 'white' | 'black';
 export interface Piece {
@@ -125,3 +125,19 @@ export interface SetPremoveMetadata {
 }
 export type Redraw = () => void;
 export type Unbind = () => void;
+
+/////////////////////////////////////
+// pieceInfos
+/////////////////////////////////////
+
+export interface pieceDatum{
+    key:number,
+    name:string,
+    promote:number,
+    step?:[number[], number[]],
+    run?:[number[], number[]],
+    second_step?:[number[], number[]],
+}
+export interface pieceData{
+    [key: string]: pieceDatum;
+}

@@ -7,6 +7,7 @@ export interface RoundApi {
   chessground,
 }
 export interface RoundData extends GameData {
+  steps: Step[];
 }
 export interface RoundOpts {
     data: RoundData;
@@ -34,15 +35,14 @@ export interface DecodedDests {
 }
 
 export interface Step {
-    ply: _.Ply;
-    fen: _.Fen;
-    san: _.San;
-    uci: _.Uci;
-    check?: boolean;
-    //crazy?: StepCrazy;
+  ply: _.Ply;
+  fen: _.Fen;
+  san: _.San;
+  uci: _.Uci;
+  check?: boolean;
 }
   
-  export interface ApiMove extends Step {
+export interface Round extends Step {
     dests: EncodedDests;
     clock?: {
       white: Seconds;
@@ -55,7 +55,6 @@ export interface Step {
     threefold: boolean;
     wDraw: boolean;
     bDraw: boolean;
-    //crazyhouse?: CrazyData;
     role?: cg.Role;
     drops?: string;
     promotion?: {
@@ -73,20 +72,20 @@ export interface Step {
     };
     isMove?: true;
     isDrop?: true;
-  }
+}
   
-  export interface ApiEnd {
-    winner?: _.Color;
-    status: Status;
-    ratingDiff?: {
-      white: number;
-      black: number;
-    };
-    boosted: boolean;
-    clock?: {
-      wc: Centis;
-      bc: Centis;
-    }
+export interface ApiEnd {
+  winner?: _.Color;
+  status: Status;
+  ratingDiff?: {
+    white: number;
+    black: number;
+  };
+  boosted: boolean;
+  clock?: {
+    wc: Centis;
+    bc: Centis;
   }
-  
+}
+
 

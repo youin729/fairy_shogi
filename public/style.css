@@ -137,24 +137,24 @@ coords coord {
     color:#333;
 }
 coords.ranks {
-    flex-flow: column;
+    flex-flow: column-reverse;
     right: -23px;
     top: 3px;
     height:100%;
     width: 12px;
 }
 coords.files {
-    flex-flow: row-reverse;
-    bottom: -15px;
+    flex-flow: row;
+    top: -16px;
     left: 12px;
     width:100%;
     text-align: center;
 }
 coords.ranks.black{
-    flex-flow: column-reverse;
+    flex-flow: column;
 }
 coords.files.black {
-    flex-flow: row;
+    flex-flow: row-reverse;
 }
 coords {
     position: absolute;
@@ -172,53 +172,102 @@ coords {
     opacity: 0.6;
 }
 
-.piece_1.black {background-image:url(piece/chushogi/_1.png)}
-.piece_2.black {background-image:url(piece/chushogi/_2.png)}
-.piece_3.black {background-image:url(piece/chushogi/_3.png)}
-.piece_4.black {background-image:url(piece/chushogi/_4.png)}
-.piece_5.black {background-image:url(piece/chushogi/_5.png)}
-.piece_6.black {background-image:url(piece/chushogi/_6.png)}
-.piece_7.black {background-image:url(piece/chushogi/_7.png)}
-.piece_8.black {background-image:url(piece/chushogi/_8.png)}
-.piece_9.black {background-image:url(piece/chushogi/_9.png)}
-.piece_10.black {background-image:url(piece/chushogi/_10.png)}
-.piece_11.black {background-image:url(piece/chushogi/_11.png)}
-.piece_12.black {background-image:url(piece/chushogi/_12.png)}
-.piece_13.black {background-image:url(piece/chushogi/_13.png)}
-.piece_14.black {background-image:url(piece/chushogi/_14.png)}
-.piece_15.black {background-image:url(piece/chushogi/_15.png)}
-.piece_16.black {background-image:url(piece/chushogi/_16.png)}
-.piece_17.black {background-image:url(piece/chushogi/_17.png)}
-.piece_18.black {background-image:url(piece/chushogi/_18.png)}
-.piece_19.black {background-image:url(piece/chushogi/_19.png)}
-.piece_20.black {background-image:url(piece/chushogi/_20.png)}
-.piece_21.black {background-image:url(piece/chushogi/_21.png)}
+.piece_1.reverse {background-image:url(piece/chushogi/_1.png)}
+.piece_2.reverse {background-image:url(piece/chushogi/_2.png)}
+.piece_3.reverse {background-image:url(piece/chushogi/_3.png)}
+.piece_4.reverse {background-image:url(piece/chushogi/_4.png)}
+.piece_5.reverse {background-image:url(piece/chushogi/_5.png)}
+.piece_6.reverse {background-image:url(piece/chushogi/_6.png)}
+.piece_7.reverse {background-image:url(piece/chushogi/_7.png)}
+.piece_8.reverse {background-image:url(piece/chushogi/_8.png)}
+.piece_9.reverse {background-image:url(piece/chushogi/_9.png)}
+.piece_10.reverse {background-image:url(piece/chushogi/_10.png)}
+.piece_11.reverse {background-image:url(piece/chushogi/_11.png)}
+.piece_12.reverse {background-image:url(piece/chushogi/_12.png)}
+.piece_13.reverse {background-image:url(piece/chushogi/_13.png)}
+.piece_14.reverse {background-image:url(piece/chushogi/_14.png)}
+.piece_15.reverse {background-image:url(piece/chushogi/_15.png)}
+.piece_16.reverse {background-image:url(piece/chushogi/_16.png)}
+.piece_17.reverse {background-image:url(piece/chushogi/_17.png)}
+.piece_18.reverse {background-image:url(piece/chushogi/_18.png)}
+.piece_19.reverse {background-image:url(piece/chushogi/_19.png)}
+.piece_20.reverse {background-image:url(piece/chushogi/_20.png)}
+.piece_21.reverse {background-image:url(piece/chushogi/_21.png)}
+.piece_22.reverse {background-image:url(piece/chushogi/_22.png)}
 
-.piece_1.white {background-image:url(piece/chushogi/1.png)}
-.piece_2.white {background-image:url(piece/chushogi/2.png)}
-.piece_3.white {background-image:url(piece/chushogi/3.png)}
-.piece_4.white {background-image:url(piece/chushogi/4.png)}
-.piece_5.white {background-image:url(piece/chushogi/5.png)}
-.piece_6.white {background-image:url(piece/chushogi/6.png)}
-.piece_7.white {background-image:url(piece/chushogi/7.png)}
-.piece_8.white {background-image:url(piece/chushogi/8.png)}
-.piece_9.white {background-image:url(piece/chushogi/9.png)}
-.piece_10.white {background-image:url(piece/chushogi/10.png)}
-.piece_11.white {background-image:url(piece/chushogi/11.png)}
-.piece_12.white {background-image:url(piece/chushogi/12.png)}
-.piece_13.white {background-image:url(piece/chushogi/13.png)}
-.piece_14.white {background-image:url(piece/chushogi/14.png)}
-.piece_15.white {background-image:url(piece/chushogi/15.png)}
-.piece_16.white {background-image:url(piece/chushogi/16.png)}
-.piece_17.white {background-image:url(piece/chushogi/17.png)}
-.piece_18.white {background-image:url(piece/chushogi/18.png)}
-.piece_19.white {background-image:url(piece/chushogi/19.png)}
-.piece_20.white {background-image:url(piece/chushogi/20.png)}
-.piece_21.white {background-image:url(piece/chushogi/21.png)}
+.piece_101.reverse {background-image:url(piece/chushogi/_101.png)}
+.piece_102.reverse {background-image:url(piece/chushogi/_102.png)}
+.piece_103.reverse {background-image:url(piece/chushogi/_103.png)}
+.piece_104.reverse {background-image:url(piece/chushogi/_104.png)}
+.piece_105.reverse {background-image:url(piece/chushogi/_105.png)}
+.piece_106.reverse {background-image:url(piece/chushogi/_106.png)}
+.piece_107.reverse {background-image:url(piece/chushogi/_107.png)}
+.piece_108.reverse {background-image:url(piece/chushogi/_108.png)}
+.piece_109.reverse {background-image:url(piece/chushogi/_109.png)}
+.piece_110.reverse {background-image:url(piece/chushogi/_110.png)}
+.piece_111.reverse {background-image:url(piece/chushogi/_111.png)}
+.piece_112.reverse {background-image:url(piece/chushogi/_112.png)}
+.piece_113.reverse {background-image:url(piece/chushogi/_113.png)}
+.piece_114.reverse {background-image:url(piece/chushogi/_114.png)}
+.piece_115.reverse {background-image:url(piece/chushogi/_115.png)}
+.piece_116.reverse {background-image:url(piece/chushogi/_116.png)}
+.piece_117.reverse {background-image:url(piece/chushogi/_117.png)}
+.piece_118.reverse {background-image:url(piece/chushogi/_118.png)}
+.piece_119.reverse {background-image:url(piece/chushogi/_119.png)}
+.piece_120.reverse {background-image:url(piece/chushogi/_120.png)}
+.piece_121.reverse {background-image:url(piece/chushogi/_121.png)}
+.piece_122.reverse {background-image:url(piece/chushogi/_122.png)}
+
+.piece_1.normal {background-image:url(piece/chushogi/1.png)}
+.piece_2.normal {background-image:url(piece/chushogi/2.png)}
+.piece_3.normal {background-image:url(piece/chushogi/3.png)}
+.piece_4.normal {background-image:url(piece/chushogi/4.png)}
+.piece_5.normal {background-image:url(piece/chushogi/5.png)}
+.piece_6.normal {background-image:url(piece/chushogi/6.png)}
+.piece_7.normal {background-image:url(piece/chushogi/7.png)}
+.piece_8.normal {background-image:url(piece/chushogi/8.png)}
+.piece_9.normal {background-image:url(piece/chushogi/9.png)}
+.piece_10.normal {background-image:url(piece/chushogi/10.png)}
+.piece_11.normal {background-image:url(piece/chushogi/11.png)}
+.piece_12.normal {background-image:url(piece/chushogi/12.png)}
+.piece_13.normal {background-image:url(piece/chushogi/13.png)}
+.piece_14.normal {background-image:url(piece/chushogi/14.png)}
+.piece_15.normal {background-image:url(piece/chushogi/15.png)}
+.piece_16.normal {background-image:url(piece/chushogi/16.png)}
+.piece_17.normal {background-image:url(piece/chushogi/17.png)}
+.piece_18.normal {background-image:url(piece/chushogi/18.png)}
+.piece_19.normal {background-image:url(piece/chushogi/19.png)}
+.piece_20.normal {background-image:url(piece/chushogi/20.png)}
+.piece_21.normal {background-image:url(piece/chushogi/21.png)}
+.piece_22.normal {background-image:url(piece/chushogi/22.png)}
+
+.piece_101.normal {background-image:url(piece/chushogi/101.png)}
+.piece_102.normal {background-image:url(piece/chushogi/102.png)}
+.piece_103.normal {background-image:url(piece/chushogi/103.png)}
+.piece_104.normal {background-image:url(piece/chushogi/104.png)}
+.piece_105.normal {background-image:url(piece/chushogi/105.png)}
+.piece_106.normal {background-image:url(piece/chushogi/106.png)}
+.piece_107.normal {background-image:url(piece/chushogi/107.png)}
+.piece_108.normal {background-image:url(piece/chushogi/108.png)}
+.piece_109.normal {background-image:url(piece/chushogi/109.png)}
+.piece_110.normal {background-image:url(piece/chushogi/110.png)}
+.piece_111.normal {background-image:url(piece/chushogi/111.png)}
+.piece_112.normal {background-image:url(piece/chushogi/112.png)}
+.piece_113.normal {background-image:url(piece/chushogi/113.png)}
+.piece_114.normal {background-image:url(piece/chushogi/114.png)}
+.piece_115.normal {background-image:url(piece/chushogi/115.png)}
+.piece_116.normal {background-image:url(piece/chushogi/116.png)}
+.piece_117.normal {background-image:url(piece/chushogi/117.png)}
+.piece_118.normal {background-image:url(piece/chushogi/118.png)}
+.piece_119.normal {background-image:url(piece/chushogi/119.png)}
+.piece_120.normal {background-image:url(piece/chushogi/120.png)}
+.piece_121.normal {background-image:url(piece/chushogi/121.png)}
+.piece_122.normal {background-image:url(piece/chushogi/122.png)}
+
+
 
 piece{
-    background-size: 125%;
-    background-position: left -6px top -6px;
+    background-position: left -1px top 0;
 }
 .pawn.white {background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PHBhdGggZD0iTTIyLjUgOWMtMi4yMSAwLTQgMS43OS00IDQgMCAuODkuMjkgMS43MS43OCAyLjM4QzE3LjMzIDE2LjUgMTYgMTguNTkgMTYgMjFjMCAyLjAzLjk0IDMuODQgMi40MSA1LjAzLTMgMS4wNi03LjQxIDUuNTUtNy40MSAxMy40N2gyM2MwLTcuOTItNC40MS0xMi40MS03LjQxLTEzLjQ3IDEuNDctMS4xOSAyLjQxLTMgMi40MS01LjAzIDAtMi40MS0xLjMzLTQuNS0zLjI4LTUuNjIuNDktLjY3Ljc4LTEuNDkuNzgtMi4zOCAwLTIuMjEtMS43OS00LTQtNHoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==')}
 .knight.white {background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMiAxMGMxMC41IDEgMTYuNSA4IDE2IDI5SDE1YzAtOSAxMC02LjUgOC0yMSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yNCAxOGMuMzggMi45MS01LjU1IDcuMzctOCA5LTMgMi0yLjgyIDQuMzQtNSA0LTEuMDQyLS45NCAxLjQxLTMuMDQgMC0zLTEgMCAuMTkgMS4yMy0xIDItMSAwLTQuMDAzIDEtNC00IDAtMiA2LTEyIDYtMTJzMS44OS0xLjkgMi0zLjVjLS43My0uOTk0LS41LTItLjUtMyAxLTEgMyAyLjUgMyAyLjVoMnMuNzgtMS45OTIgMi41LTNjMSAwIDEgMyAxIDMiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVhLjUgMS41IDMwIDEgMS0uODY2LS41LjUgMS41IDMwIDEgMSAuODY2LjV6IiBmaWxsPSIjMDAwIi8+PC9nPjwvc3ZnPg==')}

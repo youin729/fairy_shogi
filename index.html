@@ -87,9 +87,46 @@
                     <span>プレイヤー2</span>
                 </div>
             </div>
-            <ul class="record">
-                
-            </ul>
+            <div class="record">
+                <div class="record-body" id="text-test">
+                    テキストテキストテキストテキストテキストテキストテキスト
+                </div>
+            </div>
+            <style>
+                .control{
+                    margin-left:20px;
+                }
+                .record {
+    border: 0;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 6px;
+    color: #333333;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.record {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #eeeeee;
+    border-radius: 0.25rem;
+}
+.record {
+    font-size: .875rem;
+}
+.record .record-body {
+    padding: 0.9375rem 20px;
+    min-height: 300px;
+    overflow-y: scroll;
+    position: relative;
+}
+            </style>
             <div class="about-player">
                 <img width="40" height="40" src="./public/demo/user1.png" alt="プレイヤー1">
                 <div class="user-tagline">

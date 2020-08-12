@@ -6,7 +6,8 @@ import { DrawShape } from './draw';
 import { cancel as dragCancel } from './drag';
 import { State, defaults } from './state';
 import * as cg from './types';
-import { setMove, setPremove } from './move'
+import { write as fenWrite } from './fen';
+import { setMove, setMultipleMove, setPremove } from './move'
 
 export interface Api {
     // reconfigure the instance. Accepts all config options, except for viewOnly & drawable.visible.
@@ -18,19 +19,22 @@ export interface Api {
   
     // get the position as a FEN string (only contains pieces, no flags)
     // e.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
-    //getFen(): cg.FEN;
+    getFen(): cg.FEN;
   
     // change the view angle 盤を反転させる。
     toggleOrientation(): void;
 
     //setMove
     setMove(): void;
+
+    //setMove
+    setMultipleMove(dest: cg.Key): void;
   
     // perform a move programmatically プログラムにしたがって駒を動かす
     move(orig: cg.Key, dest: cg.Key): void;
   
     // add and/or remove arbitrary pieces on the board 任意の駒を盤に追加/取り除く
-    //setPieces(pieces: cg.PiecesDiff): void;
+    setPieces(pieces: cg.Pieces): void;
   
     // click a square programmatically マスを選択したときの動き
     selectSquare(key: cg.Key | null, force?: boolean): void;
@@ -94,14 +98,14 @@ export interface Api {
 
       state,
   
-      //getFen: () => fenWrite(state.pieces),
+      getFen: () => fenWrite(state.pieces),
   
       toggleOrientation,
-  /*
+
       setPieces(pieces) {
         anim(state => board.setPieces(state, pieces), state);
       },
-  */
+
       selectSquare(key, force) {
         if (key) anim(state => board.selectSquare(state, key, force), state);
         else if (state.selected) {
@@ -116,6 +120,10 @@ export interface Api {
 
       setMove() {
         state.movable.dests = setMove(state);
+      },
+
+      setMultipleMove(dest) {
+        state.movable.dests = setMultipleMove(state, dest);
       },
 
       newPiece(piece, key) {
@@ -145,7 +153,7 @@ export interface Api {
       },
 
       setPremove() {
-        state.movable.dests = setPremove(state);
+        state.premovable.dests = setPremove(state);
       },
 
   /*

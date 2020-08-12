@@ -1,6 +1,6 @@
 
 import * as cg from './types'
-import { whitePov } from './board'
+import { whitePov, pov } from './board'
 import * as util from './util'
 import { AnimCurrent, AnimVectors, AnimVector, AnimFadings } from './anim'
 import { DragCurrent } from './drag'
@@ -32,6 +32,7 @@ export default function render(s: State): void {
   piecesKeys: cg.Key[] = Object.keys(pieces) as cg.Key[];
 
   let boardEl: HTMLElement = s.dom.elements.board,
+  orientation: cg.Color = s.orientation,
   k:cg.Key,
   p: cg.Piece | undefined,
   el: cg.PieceNode | cg.SquareNode,
@@ -69,7 +70,7 @@ export default function render(s: State): void {
       if (pieceAtKey) {
         // continue animation if already animating and same piece
         // (otherwise it could animate a captured piece)
-        if (anim && el.cgAnimating && elPieceName === pieceNameOf(pieceAtKey)) {
+        if (anim && el.cgAnimating && elPieceName === pieceNameOf(pieceAtKey, orientation)) {
           const pos = util.key2pos(k);
           pos[0] += anim[2];
           pos[1] += anim[3];
@@ -82,12 +83,12 @@ export default function render(s: State): void {
           //if (s.addPieceZIndex) el.style.zIndex = posZIndex(util.key2pos(k), asWhite);
         }
         // same piece: flag as same
-        if (elPieceName === pieceNameOf(pieceAtKey) && (!fading || !el.cgFading)) {
+        if (elPieceName === pieceNameOf(pieceAtKey, orientation) && (!fading || !el.cgFading)) {
           samePieces[k] = true;
         }
         // different piece: flag as moved unless it is a fading piece
         else {
-          if (fading && elPieceName === pieceNameOf(fading)) {
+          if (fading && elPieceName === pieceNameOf(fading, orientation)) {
             el.classList.add('fading');
             el.cgFading = true;
           } else {
@@ -142,7 +143,7 @@ export default function render(s: State): void {
     p = pieces[k]!;
     anim = anims[k];
     if (!samePieces[k]) {
-      pMvdset = movedPieces[pieceNameOf(p)];
+      pMvdset = movedPieces[pieceNameOf(p, orientation)];
       pMvd = pMvdset && pMvdset.pop();
       // a same piece was moved
       if (pMvd) {
@@ -165,7 +166,7 @@ export default function render(s: State): void {
       // no piece in moved obj: insert the new piece
       // assumes the new piece is not being dragged
       else {
-        const pieceName = pieceNameOf(p),
+        const pieceName = pieceNameOf(p, orientation),
         pieceNode = util.createEl('piece', pieceName) as cg.PieceNode,
         pos = util.key2pos(k);
 
@@ -199,8 +200,9 @@ function isSquareNode(el: cg.PieceNode | cg.SquareNode): el is cg.SquareNode {
   return el.tagName === 'SQUARE';
 }
 
-function pieceNameOf(piece: cg.Piece): string {
-  return `${piece.color} piece_${piece.role}`;
+function pieceNameOf(piece: cg.Piece, orientation: cg.Color): string {
+  const piece_tag = orientation === piece.color ? "normal" : "reverse";
+  return `${piece_tag} piece_${piece.role}`;
 }
 
 function removeNodes(s: State, nodes: HTMLElement[]): void {

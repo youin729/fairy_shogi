@@ -11,6 +11,7 @@ export interface Config {
   turnColor?: cg.Color; // turn to play. white | black
   check?: cg.Color | boolean; // true for current color, false to unset
   lastMove?: cg.Key[]; // squares part of the last move ["c3", "c4"]
+  pieceInfos?: cg.pieceData, // piece move and promote infomation
   selected?: cg.Key; // square currently selected "a1"
   coordinates?: boolean; // include coords attributes
   autoCastle?: boolean; // immediately complete the castle by moving the rook after king move

@@ -21,3 +21,12 @@ $ heroku create
 $ git push heroku master
 $ heroku open
 
+
+---------------------
+
+盤や駒種類を変更する場合
+pieces.tsを変更する。
+cssを変更する。
+gamedata.tsを変更する。
+
+

@@ -5,15 +5,16 @@ import * as fen from './fen';
 import { Drawable } from './draw'
 import { timer } from './util'
 
-
 export interface State {
     pieces: cg.Pieces;
     orientation: cg.Color; // board orientation. white | black
     turnColor: cg.Color; // turn to play. white | black
     check?: cg.Key; // square currently in check "a2"
     lastMove?: cg.Key[]; // squares part of the last move ["c3"; "c4"]
+    pieceInfos?: cg.pieceData, // piece move and promote infomation
     selected?: cg.Key; // square currently selected "a1"
     coordinates: boolean; // include coords attributes
+    multimove?: boolean; // in multimove, stepping on same square
     viewOnly: boolean; // don't bind events: the user will never be able to move pieces around
     resizable: boolean; // listens to chessground.resize on document.body to clear bounds cache
     highlight: {
@@ -97,7 +98,7 @@ export interface State {
 
 export function defaults(): Partial<State> {
     return {
-        pieces: fen.chushogi_read(),
+        pieces: fen.read("start"),
         orientation: 'black', //if shogi variants 'black' is first
         turnColor: 'black',
         coordinates: true,
