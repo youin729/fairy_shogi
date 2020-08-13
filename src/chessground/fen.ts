@@ -78,12 +78,24 @@ export function read(fen: cg.FEN): cg.Pieces {
 }
 
 export function write(pieces: cg.Pieces): cg.FEN {
-  return cg.ranks.map(y => cg.ranks.map(x => {
+  let fen:string = "";
+  for(const y of cg.ranks){
+    let fen_row:string = "";
+    for(const x of cg.ranks){
       const piece = pieces[pos2key([x, y])];
       if (piece) {
-        return piece.color === 'white' ? "[-" + piece.role + "]" : "[" + piece.role + "]";
-      } else return '1';
-    }).join('')
-  ).join('/').replace(/1{2,}/g, s => s.length.toString());
+        fen_row += piece.color === 'white' ? "[-" + piece.role + "]" : "[" + piece.role + "]";
+      } else {
+        let n = parseInt(fen_row.slice(-1));
+        if(!isNaN(n)){
+          fen_row = fen_row.slice(0,-1) + String(n + 1)
+        } else {
+          fen_row += "1"
+        }
+      }
+    }
+    fen += fen_row + "/";
+  }
+  return fen;
 }
 
