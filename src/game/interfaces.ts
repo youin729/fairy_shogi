@@ -17,8 +17,8 @@ export interface Game {
   player: _.Color;
   turns: number;
   winner?: _.Color;
-/*
   startedAtTurn?: number;
+/*
   source: Source;
   speed: Speed;
   variant: Variant;

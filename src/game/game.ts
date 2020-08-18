@@ -27,11 +27,11 @@ export function isClassical(data: GameData): boolean {
 export function mandatory(data: GameData): boolean {
   return !!data.tournament || !!data.simul;
 }
-
+*/
 export function playedTurns(data: GameData): number {
   return data.game.turns - (data.game.startedAtTurn || 0);
 }
-
+/*
 export function bothPlayersHavePlayed(data: GameData): boolean {
   return playedTurns(data) > 1;
 }

@@ -1,4 +1,5 @@
 import { GameData, Status } from './game/interfaces';
+import { ClockData } from './clock/clockCtrl';
 import * as _ from './common/type';
 import * as cg from './chessground/types';
 
@@ -7,6 +8,7 @@ export interface RoundApi {
   chessground,
 }
 export interface RoundData extends GameData {
+  clock?: ClockData;
   steps: Step[];
 }
 export interface RoundOpts {
@@ -73,6 +75,8 @@ export interface Round extends Step {
     isMove?: true;
     isDrop?: true;
 }
+
+export type Position = 'top' | 'bottom';
   
 export interface ApiEnd {
   winner?: _.Color;

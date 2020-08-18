@@ -41,7 +41,11 @@ function legalMove(state: State, key: cg.Key, premove?: boolean, multiple?:boole
               let dest_key = util.pos2key([xx, yy]);
               let target_piece = state.pieces[dest_key];
               //味方の駒でなければ
-              if(!premove && (!target_piece || target_piece.color !== piece.color)){
+              if(!premove && (!target_piece || (target_piece.color !== piece.color))){
+                pos2.push(dest_key);
+              }
+              //その場移動
+              if(key === dest_key){
                 pos2.push(dest_key);
               }
           }

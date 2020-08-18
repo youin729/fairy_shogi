@@ -231,12 +231,12 @@ function makeCustomBrush(base: DrawBrush, modifiers: DrawModifiers): DrawBrush {
 }
 
 function circleWidth(bounds: ClientRect): [number, number] {
-  const base = bounds.width / 550;
+  const base = bounds.width / 600;
   return [3 * base, 4 * base];
 }
 
 function lineWidth(brush: DrawBrush, current: boolean, bounds: ClientRect): number {
-  return (brush.lineWidth || 10) * (current ? 0.85 : 1) / 550 * bounds.width;
+  return (brush.lineWidth || 10) * (current ? 0.85 : 1) / 700 * bounds.width;
 }
 
 function opacity(brush: DrawBrush, current: boolean): number {

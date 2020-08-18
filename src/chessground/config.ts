@@ -122,20 +122,6 @@ export function configure(state: State, config: Config) {
   // no need for such short animations
   if (!state.animation.duration || state.animation.duration < 100) state.animation.enabled = false;
 
-  /*
-  if (!state.movable.rookCastle && state.movable.dests) {
-    const rank = state.movable.color === 'white' ? 1 : 8,
-    kingStartPos = 'e' + rank,
-    dests = state.movable.dests[kingStartPos],
-    king = state.pieces[kingStartPos];
-    if (!dests || !king || king.role !== 'king') return;
-    state.movable.dests[kingStartPos] = dests.filter(d =>
-      !((d === 'a' + rank) && dests.indexOf('c' + rank as cg.Key) !== -1) &&
-        !((d === 'h' + rank) && dests.indexOf('g' + rank as cg.Key) !== -1)
-    );
-  }
-  */
-
 };
 
 function merge(base: any, extend: any) {

@@ -1,6 +1,5 @@
 import * as cg from './types';
 import { State } from './state'
-import premove from './premove'
 import { opposite } from './util'
 import { pos2key, key2pos, containsX } from './util'
 
@@ -26,20 +25,18 @@ export function callUserFunction(f: Callback | undefined, ...args: any[]): void 
 }
 export function selectSquare(state: State, key: cg.Key, force?: boolean): void {
     callUserFunction(state.events.select, key);
-
     if (state.selected) {
-      if (state.selected === key && !state.draggable.enabled) {
+      if (state.selected === key && !state.draggable.enabled && !state.multimove) {
         unselect(state);
         state.hold.cancel();
         return;
-      } else if ((state.selectable.enabled || force) && state.selected !== key) {
+      } else if ((state.selectable.enabled || force) && (state.selected !== key || (state.selected === key && state.multimove))){
         if (userMove(state, state.selected, key)) {
           state.stats.dragged = false;
           return;
         }
       }
     }
-
     if (isMovable(state, key) || isPremovable(state, key)) {
         setSelected(state, key);
         state.hold.start();
@@ -87,6 +84,7 @@ export function playPremove(state: State): boolean {
   unsetPremove(state);
   return success;
 }
+
 function isMovable(state: State, orig: cg.Key): boolean {
     const piece = state.pieces[orig];
     return !!piece && (
@@ -114,16 +112,18 @@ export function unselect(state: State): void {
     state.hold.cancel();
 }
 
-
 export function baseMove(state: State, orig: cg.Key, dest: cg.Key): cg.Piece | boolean {
     const origPiece = state.pieces[orig], destPiece = state.pieces[dest];
-    if ((orig === dest || !origPiece) && !state.multimove) return false;
+    if ((orig === dest && !state.multimove) || !origPiece) return false;
+
     const captured = (destPiece && destPiece.color !== origPiece.color) ? destPiece : undefined;
-    if (dest == state.selected) unselect(state);
+    if (dest == state.selected && !state.multimove) unselect(state);
     callUserFunction(state.events.move, orig, dest, captured);
 
     state.pieces[dest] = origPiece;
-    delete state.pieces[orig];
+    if(!(state.multimove && orig === dest)){
+      delete state.pieces[orig];
+    }
 
     state.lastMove = [orig, dest];
     state.check = undefined;
@@ -135,7 +135,7 @@ function baseUserMove(state: State, orig: cg.Key, dest: cg.Key): cg.Piece | bool
     const result = baseMove(state, orig, dest);
     if (result) {
       state.movable.dests = undefined;
-      state.turnColor = opposite(state.turnColor);
+      //state.turnColor = opposite(state.turnColor); change by ctrl.ts
       state.animation.current = undefined;
     }
     return result;
@@ -207,8 +207,7 @@ export function isDraggable(state: State, orig: cg.Key): boolean {
     );
 }
 export function canMove(state: State, orig: cg.Key, dest: cg.Key): boolean {
-    console.log()
-    return (!state.multimove && orig !== dest) && isMovable(state, orig) && (
+    return (orig !== dest || orig === dest && state.multimove) && isMovable(state, orig) && (
         state.movable.free || (!!state.movable.dests && containsX(state.movable.dests[orig], dest))
     );
 }
@@ -229,12 +228,8 @@ export function stop(state: State): void {
 }
 function canPremove(state: State, orig: cg.Key, dest: cg.Key): boolean {
     return orig !== dest &&
-    isPremovable(state, orig) &&
-    containsX(premove(state.pieces, orig, state.premovable.castle), dest);
+    isPremovable(state, orig) // &&containsX(premove(state.pieces, orig, state.premovable.castle), dest);
 }
 export function whitePov(s: State): boolean {
     return s.orientation === 'white';
-}
-export function pov(s: State): boolean {
-  return s.orientation === s.turnColor;
 }

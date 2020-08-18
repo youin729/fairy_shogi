@@ -1,11 +1,13 @@
-
+/* @memo
+  駒の状況に応じた動きをrenderする
+  最初の描画はwrap.tsで行うため、最初の描画後の動きに関する部分を担う
+*/
 import * as cg from './types'
-import { whitePov, pov } from './board'
+import { whitePov } from './board'
 import * as util from './util'
 import { AnimCurrent, AnimVectors, AnimVector, AnimFadings } from './anim'
 import { DragCurrent } from './drag'
 import { State } from './state'
-
 
 type PieceName = string;
 
@@ -80,7 +82,6 @@ export default function render(s: State): void {
           el.cgAnimating = false;
           el.classList.remove('anim');
           translate(el, posToTranslate(util.key2pos(k), asWhite));
-          //if (s.addPieceZIndex) el.style.zIndex = posZIndex(util.key2pos(k), asWhite);
         }
         // same piece: flag as same
         if (elPieceName === pieceNameOf(pieceAtKey, orientation) && (!fading || !el.cgFading)) {
@@ -102,7 +103,6 @@ export default function render(s: State): void {
         if (movedPieces[elPieceName]) movedPieces[elPieceName].push(el);
         else movedPieces[elPieceName] = [el];
       }
-      
     }
     
     else if (isSquareNode(el)) {
@@ -154,7 +154,6 @@ export default function render(s: State): void {
           pMvd.cgFading = false;
         }
         const pos = util.key2pos(k);
-        //if (s.addPieceZIndex) pMvd.style.zIndex = posZIndex(pos, asWhite);
         if (anim) {
           pMvd.cgAnimating = true;
           pMvd.classList.add('anim');
@@ -178,18 +177,12 @@ export default function render(s: State): void {
           pos[1] += anim[3];
         }
         translate(pieceNode, posToTranslate(pos, asWhite));
-
-        //if (s.addPieceZIndex) pieceNode.style.zIndex = posZIndex(pos, asWhite);
-
         boardEl.appendChild(pieceNode);
       }
     }
   }
   // remove any element that remains in the moved sets
-  //駒を取り除く場合 ？
   for (const i in movedPieces) removeNodes(s, movedPieces[i]);
-
-  //駒を動かした場合？
   for (const i in movedSquares) removeNodes(s, movedSquares[i]);
 }
 
@@ -223,7 +216,7 @@ function computeSquareClasses(s: State): SquareClasses {
       const dests = s.movable.dests && s.movable.dests[s.selected];
       if (dests) for (i in dests) {
         k = dests[i];
-        addSquare(squares, k, 'move-dest' + (s.pieces[k] ? ' oc' : ''));
+        addSquare(squares, k, 'move-dest' + (s.pieces[k] ? ' oc' : '') + (s.selected === k ? ' mc' : ''));
       }
       const pDests = s.premovable.dests && s.premovable.dests[s.selected];
       if (pDests) for (i in pDests) {

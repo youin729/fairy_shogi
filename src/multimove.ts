@@ -21,8 +21,6 @@ export function start(ctrl: RoundController, orig: cg.Key, dest: cg.Key): boolea
 
       //diff_y が絶対値だと判定できない
       if(diff_x <= 1 && diff_y <= 1){
-        alert("diff_x:" + diff_x);
-        alert("diff_y:" + diff_y);
         ctrl.chessground.state.multimove = true;
         ctrl.chessground.setMultipleMove(dest);
         return true;

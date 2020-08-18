@@ -18,7 +18,6 @@ export interface Api {
     state: State;
   
     // get the position as a FEN string (only contains pieces, no flags)
-    // e.g. rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
     getFen(): cg.FEN;
   
     // change the view angle 盤を反転させる。
@@ -51,21 +50,12 @@ export interface Api {
     //setMove
     setPremove(): void;
   
-    // play the current predrop, if any; returns true if premove was played　クレイジーハウス用？プリドロップ
-    //playPredrop(validate: (drop: cg.Drop) => boolean): boolean;
-  
-    // cancel the current predrop, if any
-    //cancelPredrop(): void;
-  
     // cancel the current move being made 待った？
     cancelMove(): void;
   
     // cancel current move and prevent further ones
     stop(): void;
-  
-    // make squares explode (atomic chess)　アトミックチェスで
-    //explode(keys: cg.Key[]): void;
-  
+
     // programmatically draw user shapes 図形を描く(矢印や〇など)
     setShapes(shapes: DrawShape[]): void;
   
@@ -77,10 +67,7 @@ export interface Api {
   
     // only useful when CSS changes the board width/height ratio (for 3D) 盤の大きさを変更したとき、すべてを再描画する。
     redrawAll: cg.Redraw;
-  
-    // for crazyhouse and board editors クレイジーハウス向け
-    //dragNewPiece(piece: cg.Piece, event: cg.MouchEvent, force?: boolean): void;
-  
+
     // unbinds all events
     // (important for document-wide events like scroll and mousemove)
     //destroy: cg.Unbind
@@ -138,16 +125,7 @@ export interface Api {
         }
         return false;
       },
-  /*
-      playPredrop(validate) {
-        if (state.predroppable.current) {
-          const result = board.playPredrop(state, validate);
-          state.dom.redraw();
-          return result;
-        }
-        return false;
-      },
-  */
+
       cancelPremove() {
         render(board.unsetPremove, state);
       },
@@ -156,11 +134,6 @@ export interface Api {
         state.premovable.dests = setPremove(state);
       },
 
-  /*
-      cancelPredrop() {
-        render(board.unsetPredrop, state);
-      },
-  */
       cancelMove() {
         render(state => { board.cancelMove(state); dragCancel(state); }, state);
       },
@@ -168,11 +141,7 @@ export interface Api {
       stop() {
         render(state => { board.stop(state); dragCancel(state); }, state);
       },
-  /*
-      explode(keys: cg.Key[]) {
-        explosion(state, keys);
-      },
-  */
+
       setAutoShapes(shapes: DrawShape[]) {
         render(state => state.drawable.autoShapes = shapes, state);
       },
@@ -184,12 +153,7 @@ export interface Api {
       getKeyAtDomPos(pos) {
         return board.getKeyAtDomPos(pos, board.whitePov(state), state.dom.bounds());
       },
-  
+
       redrawAll,
-  /*
-      dragNewPiece(piece, event, force) {
-        dragNewPiece(state, piece, event, force)
-      },
-  */
     };
   }

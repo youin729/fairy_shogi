@@ -3,7 +3,6 @@ import { State } from './state'
 import * as cg from './types'
 import * as drag from './drag'
 import * as draw from './draw'
-import { drop } from './drop'
 import { isRightButton } from './util'
 
 type MouchBind = (e: cg.MouchEvent) => void;
@@ -66,8 +65,8 @@ function startDragOrDraw(s: State): MouchBind {
         else if (s.drawable.current) draw.cancel(s);
         else if (e.shiftKey || isRightButton(e)) { if (s.drawable.enabled) draw.start(s, e); }
         else {
-            if (s.dropmode.active) drop(s, e);
-            else drag.start(s, e);
+            //if (s.dropmode.active) drop(s, e);
+            drag.start(s, e);
         }
     };
 }

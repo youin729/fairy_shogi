@@ -4,6 +4,7 @@ import { Api as CgApi } from './chessground/api';
 import { Config } from './chessground/config';
 import * as cg from './chessground/types';
 import * as io from "socket.io-client";
+import { ClockController, ColorMap, ClockElements} from './clock/clockCtrl';
 
 import { make as makeSocket, RoundSocket } from './socket';
 import * as gi from "./game/interfaces";
@@ -18,99 +19,6 @@ import { CHUSHOGI_PIECES as pieceData } from './pieces';
 const socket = io();
 
 let text: string = "";
-
-//////////////////////////////////////////////////
-
-export default class RoundController {
-    chessground: CgApi;
-    socket: RoundSocket;
-    data: RoundData;
-    ply: number;
-
-    constructor(readonly opts: RoundOpts) {
-        this.data = opts.data;
-        this.socket = makeSocket(opts.socketSend, this);
-        this.ply = 0;
-        //this.ply = round.lastPly(d);
-    }
-    private onUserMove = (orig: cg.Key, dest: cg.Key, meta: cg.MoveMetadata) => {
-        promotion.start(this, orig, dest, meta);
-        
-        if (!multimove.start(this, orig, dest)){
-            this.sendMove(orig, dest, undefined, meta);
-            //this.chessground.setPremove();
-        }
-    }
-
-    private onMove = (_: cg.Key, dest: cg.Key, captured?: cg.Piece) => {
-        sound.move();
-        this.chessground.setMove();
-    };
-    isPlaying = () => game.isPlayerPlaying(this.data);
-
-    // turn colorを変更する
-    set(orig: cg.Key, dest: cg.Key){
-        const d = this.data,
-        playing = this.isPlaying();
-        d.game.turns = this.ply;
-        d.game.player = this.ply % 2 === 0 ? 'white' : 'black';
-
-        const playedColor = this.ply % 2 === 0 ? 'black' : 'white',
-          activeColor = d.player.color === d.game.player;
-        
-          /*
-        if (r.status) d.game.status = r.status;
-        if (r.winner) d.game.winner = r.winner;
-*/
-        //////// play section ///////////
-        this.ply++;
-        
-        this.chessground.state.turnColor = d.game.player;
-        const step = {
-          ply: this.ply,
-          fen: this.chessground.getFen(),//o.fen,
-          san: "", //o.san,
-          uci: orig + dest, //o.uci,
-          check: false, //o.check,
-        };
-        text = "現在" + this.ply + "手目で、" + d.game.player + "の手番です。<br>"
-        text += "FEN:" + step.fen + "<br>"
-        text += "uci：" + step.uci
-        document.getElementById("text-test").innerHTML = text;
-        d.steps.push(step);
-    }
-
-    sendPromotion = (orig: cg.Key, dest: cg.Key, role: cg.Role, meta: cg.MoveMetadata): boolean => {
-        const piece = this.chessground.state.pieces[dest];
-        if (piece) {
-          const pieces: cg.Pieces = {};
-          pieces[dest] = {
-            color: piece.color,
-            role,
-            promoted: true
-          };
-          this.chessground.setPieces(pieces);
-        }
-        ctrl.sendMove(orig, dest, role, meta);
-        return true;
-    }
-
-    sendMove = (orig: cg.Key, dest: cg.Key, prom: cg.Role | undefined, meta: cg.MoveMetadata) => {
-        const move: SocketMove = {
-          u: orig + dest
-        };
-        //socket.emit('move', move.u);
-        this.set(orig, dest);
-    };
-    makeCgHooks = () => ({
-        onUserMove: this.onUserMove,
-        onMove: this.onMove,
-    });
-    setChessground = (cg) => {
-        this.chessground = cg;
-    }
-}
-
 
 /////////////////// example data 
 const g: gi.Game = {
@@ -148,9 +56,18 @@ if(queryString){
 let gd: RoundData;
 
 if(queryObject["p"] == 1){
-    alert("you are player1");
     gd = {
         game: g,
+        clock: { 
+            running: true,
+            initial: 1200,
+            increment: 5,
+            white: 1200,
+            black: 1200,
+            emerg: 200,
+            showTenths:1,
+            moretime: 15
+        },
         steps: [],
         player: player1,
         opponent: player2,
@@ -159,9 +76,18 @@ if(queryObject["p"] == 1){
     }
 
 } else if(queryObject["p"] == 2) {
-    alert("you are player2");
     gd = {
         game: g,
+        clock: { 
+            running: true,
+            initial: 1200,
+            increment: 5,
+            white: 1200,
+            black: 1200,
+            emerg: 200,
+            showTenths:1,
+            moretime: 15
+        },
         steps: [],
         player: player2,
         opponent: player1,
@@ -172,6 +98,124 @@ if(queryObject["p"] == 1){
 const rd: RoundOpts = {
     data: gd,
 }
+
+const c_el: ColorMap<ClockElements> = {
+    white : {time: document.getElementById("rclock-" + (gd.player.color === "white" ? "bottom" : "top"))},
+    black: {time: document.getElementById("rclock-" + (gd.player.color === "black" ? "bottom" : "top"))}
+}
+//////////////////////////////////////////////////
+
+export default class RoundController {
+    chessground: CgApi;
+    socket: RoundSocket;
+    data: RoundData;
+    ply: number;
+    clock?: ClockController;
+
+    constructor(readonly opts: RoundOpts) {
+        this.data = opts.data;
+        this.socket = makeSocket(opts.socketSend, this);
+        this.ply = 1;
+        //this.ply = round.lastPly(d);
+        console.log(c_el)
+        this.clock = new ClockController(this.data, {
+            onFlag: () => alert("game set"),//this.socket.outoftime,
+            soundColor: this.data.player.spectator ? undefined : this.data.player.color,
+            nvui: false,
+        }, c_el);
+        console.log(this.clock)
+    }
+    private onUserMove = (orig: cg.Key, dest: cg.Key, meta: cg.MoveMetadata) => {
+        promotion.start(this, orig, dest, meta);
+        if (!multimove.start(this, orig, dest)){
+            this.sendMove(orig, dest, undefined, meta);
+            this.chessground.setPremove();
+        }
+    }
+
+    private onMove = (_: cg.Key, dest: cg.Key, captured?: cg.Piece) => {
+        sound.move();
+        this.chessground.setMove();
+    };
+    isPlaying = () => game.isPlayerPlaying(this.data);
+
+    // turn colorを変更する
+    set(orig: cg.Key, dest: cg.Key){
+        const d = this.data,
+        playing = this.isPlaying();
+        d.game.turns = this.ply;
+        d.game.player = this.ply % 2 === 0 ? 'black' : 'white';
+
+        const playedColor = this.ply % 2 === 0 ? 'white' : 'black',
+          activeColor = d.player.color === d.game.player;
+        
+          /*
+        if (r.status) d.game.status = r.status;
+        if (r.winner) d.game.winner = r.winner;
+*/
+
+        //////// play section ///////////
+        this.ply++;
+        
+        this.chessground.state.turnColor = d.game.player;
+        const step = {
+            ply: this.ply,
+            fen: this.chessground.getFen(),//o.fen,
+            san: "", //o.san,
+            uci: orig + dest, //o.uci,
+            check: false, //o.check,
+        };
+        text = "現在" + this.ply + "手目で、" + d.game.player + "の手番です。<br>"
+        text += "FEN:" + step.fen + "<br>"
+        text += "uci：" + step.uci
+        document.getElementById("text-test").innerHTML = text;
+        d.steps.push(step);
+
+        //時間のインクリメントはサーバー側で管理？
+        /*
+        const oc = o.clock,
+            delay = (playing && activeColor) ? 0 : (oc.lag || 1);
+        if (this.clock) this.clock.setClock(d, oc.white, oc.black, delay);
+        */
+    }
+
+    sendPromotion = (orig: cg.Key, dest: cg.Key, role: cg.Role, meta: cg.MoveMetadata): boolean => {
+        const piece = this.chessground.state.pieces[dest];
+        if (piece) {
+          const pieces: cg.Pieces = {};
+          pieces[dest] = {
+            color: piece.color,
+            role,
+            promoted: true
+          };
+          this.chessground.setPieces(pieces);
+        }
+        ctrl.sendMove(orig, dest, role, meta);
+        return true;
+    }
+
+    sendMove = (orig: cg.Key, dest: cg.Key, prom: cg.Role | undefined, meta: cg.MoveMetadata) => {
+        const move: SocketMove = {
+          u: orig + dest
+        };
+
+        const moveMillis = this.clock.stopClock();
+        if (moveMillis !== undefined /*&& this.shouldSendMoveTime*/) {
+          //socketOpts.millis = moveMillis;
+        }
+        alert(moveMillis)
+        socket.emit('move', move.u);
+        //this.set(orig, dest);
+    };
+    makeCgHooks = () => ({
+        onUserMove: this.onUserMove,
+        onMove: this.onMove,
+    });
+    setChessground = (cg) => {
+        this.chessground = cg;
+    }
+}
+
 //////////////////////////////////////
 
 const ctrl: RoundController = new RoundController(rd);
@@ -187,7 +231,7 @@ const config: Config = {
     },
     movable: {
         free: false,
-        color: "both", //ctrl.isPlaying() ? ctrl.data.player.color : undefined,
+        color: ctrl.isPlaying() ? ctrl.data.player.color : undefined,
         /*
         dests: playing ? util.parsePossibleMoves(data.possibleMoves) : {},
         showDests: data.pref.destination,
@@ -201,8 +245,12 @@ ctrl.setChessground(Chessground(document.getElementById("app"), config))
 
 export function uci2move(uci: string): cg.Key[] | undefined {
     if (!uci) return undefined;
-    if (uci[1] === '@') return [uci.slice(2, 4) as cg.Key];
-    return [uci.slice(0, 2), uci.slice(2, 4)] as cg.Key[];
+    //if (uci[1] === '@') return [uci.slice(2, 4) as cg.Key];
+    if(uci.charCodeAt(2) < 57){ //isnumber?
+        return [uci.slice(0, 3), uci.slice(3)] as cg.Key[];
+    } else {
+        return [uci.slice(0, 2), uci.slice(2)] as cg.Key[];
+    }
 }
 socket.on('move', function(msg){
     const keys = uci2move(msg);

@@ -48,7 +48,6 @@ export function start(s: State, e: cg.MouchEvent): void {
         (!e.touches || !s.movable.color || piece || previouslySelected || pieceCloseTo(s, position)))
          e.preventDefault();
 
-
     const hadPremove = !!s.premovable.current;
     const hadPredrop = !!s.predroppable.current;
 
