@@ -9,24 +9,22 @@ import { ClockController, ColorMap, ClockElements} from './clock/clockCtrl';
 import { make as makeSocket, RoundSocket } from './socket';
 import * as gi from "./game/interfaces";
 import * as game from "./game/game";
-import { RoundData, RoundOpts, SocketMove } from "./interfaces";
+import { RoundData, RoundOpts, SocketMove, SocketOpts, Step, ApiMove } from "./interfaces";
 import * as _ from './common/type';
 import * as sound from './sound';
 import * as promotion from './promotion';
 import * as multimove from './multimove';
 import { CHUSHOGI_PIECES as pieceData } from './pieces';
 
+declare var gameJson: any;
+
 const socket = io();
 
 let text: string = "";
 
 /////////////////// example data 
-const g: gi.Game = {
-    id: "game1",
-    status: { id:20, name:"started"},
-    player: "black",
-    turns: 1,
-}
+const g: gi.Game = gameJson
+
 const player1: gi.Player = {
     id: "player1",
     name: "プレイヤー1",
@@ -68,7 +66,7 @@ if(queryObject["p"] == 1){
             showTenths:1,
             moretime: 15
         },
-        steps: [],
+        steps: [{"ply":0,"uci":null,"san":null,"fen":'[-3][-11][-10][-5][-6][-13][-1][-6][-5][-10][-11][-3]/[-16]1[-7]1[-12][-14][-15][-12]1[-7]1[-16]/[-17][-18][-8][-19][-20][-21][-22][-20][-19][-8][-18][-17]/[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]/3[-9]4[-9]3/12/12/3[9]4[9]3/[2][2][2][2][2][2][2][2][2][2][2][2]/[17][18][8][19][20][22][21][20][19][8][18][17]/[16]1[7]1[12][15][14][12]1[7]1[16]/[3][11][10][5][6][1][13][6][5][10][11][3] b - 1'}],
         player: player1,
         opponent: player2,
         takebackable: false,
@@ -88,7 +86,7 @@ if(queryObject["p"] == 1){
             showTenths:1,
             moretime: 15
         },
-        steps: [],
+        steps: [{"ply":0,"uci":null,"san":null,"fen":'[-3][-11][-10][-5][-6][-13][-1][-6][-5][-10][-11][-3]/[-16]1[-7]1[-12][-14][-15][-12]1[-7]1[-16]/[-17][-18][-8][-19][-20][-21][-22][-20][-19][-8][-18][-17]/[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]/3[-9]4[-9]3/12/12/3[9]4[9]3/[2][2][2][2][2][2][2][2][2][2][2][2]/[17][18][8][19][20][22][21][20][19][8][18][17]/[16]1[7]1[12][15][14][12]1[7]1[16]/[3][11][10][5][6][1][13][6][5][10][11][3] b - 1'}],
         player: player2,
         opponent: player1,
         takebackable: false,
@@ -107,76 +105,103 @@ const c_el: ColorMap<ClockElements> = {
 
 export default class RoundController {
     chessground: CgApi;
-    socket: RoundSocket;
     data: RoundData;
     ply: number;
     clock?: ClockController;
 
     constructor(readonly opts: RoundOpts) {
         this.data = opts.data;
-        this.socket = makeSocket(opts.socketSend, this);
-        this.ply = 1;
-        //this.ply = round.lastPly(d);
-        console.log(c_el)
+        this.ply = this.lastPly(this.data);
+        alert(this.ply)
         this.clock = new ClockController(this.data, {
             onFlag: () => alert("game set"),//this.socket.outoftime,
             soundColor: this.data.player.spectator ? undefined : this.data.player.color,
             nvui: false,
         }, c_el);
-        console.log(this.clock)
     }
+
     private onUserMove = (orig: cg.Key, dest: cg.Key, meta: cg.MoveMetadata) => {
         promotion.start(this, orig, dest, meta);
+
         if (!multimove.start(this, orig, dest)){
             this.sendMove(orig, dest, undefined, meta);
-            this.chessground.setPremove();
+            //this.chessground.setPremove();
         }
     }
 
     private onMove = (_: cg.Key, dest: cg.Key, captured?: cg.Piece) => {
         sound.move();
-        this.chessground.setMove();
     };
+
     isPlaying = () => game.isPlayerPlaying(this.data);
+    replaying = (): boolean => this.ply !== this.lastPly(this.data);
 
-    // turn colorを変更する
-    set(orig: cg.Key, dest: cg.Key){
-        const d = this.data,
-        playing = this.isPlaying();
-        d.game.turns = this.ply;
-        d.game.player = this.ply % 2 === 0 ? 'black' : 'white';
+    lastPly(d: RoundData): number {
+        return this.lastStep(d).ply;
+    }
+      
+    lastStep(d: RoundData): Step {
+        return d.steps[d.steps.length - 1];
+    }
 
-        const playedColor = this.ply % 2 === 0 ? 'white' : 'black',
-          activeColor = d.player.color === d.game.player;
-        
-          /*
-        if (r.status) d.game.status = r.status;
-        if (r.winner) d.game.winner = r.winner;
-*/
+    //自分が動くとき、相手が動く時、どちらもに動作する
+    apiMove(o: ApiMove){
 
-        //////// play section ///////////
-        this.ply++;
-        
-        this.chessground.state.turnColor = d.game.player;
+        const d = this.data, playing = this.isPlaying();
+
+        //ply はturn数をあらわす
+        d.game.turns = o.ply;
+        d.game.player = o.ply % 2 === 0 ? 'white' : 'black';
+        const playedColor = o.ply % 2 === 0 ? 'black' : 'white',
+        activeColor = d.player.color === d.game.player; //現在の手番かどうか
+        if (o.status) d.game.status = o.status; //ステータス更新
+        if (o.winner) d.game.winner = o.winner;
+
+        //d.possibleMoves = activeColor ? o.dests : undefined; //自分の可能な移動先は、相手から送られてきたデータの中にある。
+        //逆に自分のpremoveは送った時に作ればいい？
+
+        if (!this.replaying()) {
+            this.ply++; //手番を更新
+            const keys = uci2move(o.uci);
+            this.chessground.move(keys![0], keys![1]); //駒を動かす
+        }
+        if(this.isPlaying){
+            this.chessground.setMove();
+        }
+        this.chessground.set({
+            turnColor: d.game.player,
+            //check: !!o.check
+        });
+        //if (o.check) sound.check();
+
+        //データに移動情報を入れる
         const step = {
             ply: this.ply,
             fen: this.chessground.getFen(),//o.fen,
             san: "", //o.san,
-            uci: orig + dest, //o.uci,
+            uci: o.uci, //o.uci,
             check: false, //o.check,
         };
+
         text = "現在" + this.ply + "手目で、" + d.game.player + "の手番です。<br>"
         text += "FEN:" + step.fen + "<br>"
-        text += "uci：" + step.uci
+        text += "uci：" + step.uci + "<br>"
+        text += "time(mill)"// + moveMillis
         document.getElementById("text-test").innerHTML = text;
         d.steps.push(step);
 
-        //時間のインクリメントはサーバー側で管理？
-        /*
-        const oc = o.clock,
-            delay = (playing && activeColor) ? 0 : (oc.lag || 1);
-        if (this.clock) this.clock.setClock(d, oc.white, oc.black, delay);
-        */
+/*
+    //時間を更新
+    if (o.clock) {
+      this.shouldSendMoveTime = true;
+      const oc = o.clock,
+        delay = (playing && activeColor) ? 0 : (oc.lag || 1);
+      if (this.clock) this.clock.setClock(d, oc.white, oc.black, delay);
+      else if (this.corresClock) this.corresClock.update(
+        oc.white,
+        oc.black);
+    }
+*/
     }
 
     sendPromotion = (orig: cg.Key, dest: cg.Key, role: cg.Role, meta: cg.MoveMetadata): boolean => {
@@ -195,18 +220,21 @@ export default class RoundController {
     }
 
     sendMove = (orig: cg.Key, dest: cg.Key, prom: cg.Role | undefined, meta: cg.MoveMetadata) => {
+
         const move: SocketMove = {
           u: orig + dest
         };
-
+        const opts: SocketOpts = {
+            ackable: true
+        };
         const moveMillis = this.clock.stopClock();
         if (moveMillis !== undefined /*&& this.shouldSendMoveTime*/) {
-          //socketOpts.millis = moveMillis;
+            opts.millis = moveMillis;
         }
-        alert(moveMillis)
-        socket.emit('move', move.u);
-        //this.set(orig, dest);
+        const sendData = {move, opts}
+        socket.emit('move', sendData);
     };
+    
     makeCgHooks = () => ({
         onUserMove: this.onUserMove,
         onMove: this.onMove,
@@ -252,9 +280,9 @@ export function uci2move(uci: string): cg.Key[] | undefined {
         return [uci.slice(0, 2), uci.slice(2)] as cg.Key[];
     }
 }
-socket.on('move', function(msg){
-    const keys = uci2move(msg);
-    ctrl.chessground.move(keys![0], keys![1]);
-    ctrl.set(keys![0], keys![1]);
-    console.log(ctrl.chessground.state);
+
+// 手を送信したときにも、receiveする。
+// したがって、送信時、受信時に動作し、引数のoはサーバー側で管理される。
+socket.on('move', function(o){
+    ctrl.apiMove(o);
 });

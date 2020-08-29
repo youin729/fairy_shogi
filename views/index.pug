@@ -1,0 +1,98 @@
+doctype html
+html(lang='ja')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Fairy Shogi
+    link(type='text/css', rel='stylesheet', media='all', href='./public/style.css')
+    link(rel='stylesheet', type='text/css', href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons')
+  body
+    nav.sidebar
+      .logo
+        a(href='/') Lagacy shogi(仮)
+      .sidebar-wrapper
+        ul.nav
+          li.nav-item.active
+            a.nav-link(href='./dashboard.html')
+              i.material-icons dashboard
+              p Dashboard
+          li.nav-item
+            a.nav-link(href='./user.html')
+              i.material-icons person
+              p User Profile
+          li.nav-item
+            a.nav-link(href='./tables.html')
+              i.material-icons content_paste
+              p Table List
+          li.nav-item
+            a.nav-link(href='./typography.html')
+              i.material-icons library_books
+              p Typography
+          li.nav-item
+            a.nav-link(href='./icons.html')
+              i.material-icons bubble_chart
+              p Icons
+          li.nav-item
+            a.nav-link(href='./map.html')
+              i.material-icons location_ons
+              p Maps
+          li.nav-item
+            a.nav-link(href='./notifications.html')
+              i.material-icons notifications
+              p Notifications
+          li.nav-item
+            a.nav-link(href='./rtl.html')
+              i.material-icons language
+              p RTL Support
+          li.nav-item.active-pro
+            a.nav-link(href='./upgrade.html')
+              i.material-icons unarchive
+              p Upgrade to PRO
+    main.one-column
+      .game
+        #app
+        .control
+          .about-player
+            img(width='40', height='40', src='./public/demo/user.jpg', alt='プレイヤー2')
+            .user-tagline
+              span プレイヤー2
+              span.rating 1500
+          .clock
+            #rclock-top.time(title='white clock')
+              | 00
+              sep :
+              | 00
+              tenths
+                sep .
+                | 0
+                huns 0
+          .record
+            #text-test.record-body
+          .clock
+            #rclock-bottom.time(title='white clock')
+              | 00
+              sep :
+              | 00
+              tenths
+                sep .
+                | 0
+                huns 0
+          .about-player
+            img(width='40', height='40', src='./public/demo/user.jpg', alt='プレイヤー1')
+            .user-tagline
+              span プレイヤー1
+              span.rating 1500
+        style.
+          .rating{
+          font-weight:bold;
+          margin-left:10px;
+          }
+          .time{
+          background-color:#f0ffe9;
+          font-size:3.5rem;
+          letter-spacing: 0.05em;
+          padding: 0 0.3em;
+          }
+    script.
+      var gameJson=!{game};
+    script(src='./dist/main.js')

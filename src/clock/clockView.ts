@@ -50,7 +50,6 @@ export function renderClock(clock: ClockController, player: Player, el: HTMLElem
     millis = clock.millisOf(player.color),
     isRunning = player.color === clock.times.activeColor;
   els.time = el;
-  console.log(el)
   els.clock = el.parentElement!;
   el.innerHTML = formatClockTime(millis, clock.showTenths(millis), isRunning, clock.opts.nvui);
 }

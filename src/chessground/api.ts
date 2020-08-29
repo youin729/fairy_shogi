@@ -8,11 +8,13 @@ import { State, defaults } from './state';
 import * as cg from './types';
 import { write as fenWrite } from './fen';
 import { setMove, setMultipleMove, setPremove } from './move'
+import { Config, configure } from './config'
 
 export interface Api {
+
     // reconfigure the instance. Accepts all config options, except for viewOnly & drawable.visible.
     // board will be animated accordingly, if animations are enabled.
-    //set(config: Config): void;
+    set(config: Config): void;
   
     // read chessground state; write at your own risks.
     state: State;
@@ -82,6 +84,12 @@ export interface Api {
     };
   
     return {
+
+      // toggleOrientation
+      set(config) {
+        if (config.orientation && config.orientation !== state.orientation) toggleOrientation();
+        (config.fen ? anim : render)(state => configure(state, config), state);
+      },
 
       state,
   

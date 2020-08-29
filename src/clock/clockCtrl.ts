@@ -96,7 +96,6 @@ export class ClockController {
     this.emergMs = 1000 * Math.min(60, Math.max(10, cdata.initial * .125));
 
     this.setClock(d, cdata.white, cdata.black);
-    console.log(this.elements)
     renderClock(this, d.player, this.elements[d.player.color].time)
     renderClock(this, d.opponent, this.elements[d.opponent.color].time)
   }

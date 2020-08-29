@@ -14,10 +14,6 @@ export function read(fen: cg.FEN): cg.Pieces {
   const l = fen.length;
   for (let p = 0; p < l; p++) {
     let c = fen.charAt(p);
-    /*
-    alert("p:" + p);
-    alert("start:" + fen.charAt(p));
-    */
     switch (c) {
       case ' ': return pieces;
       case '/':
@@ -46,8 +42,6 @@ export function read(fen: cg.FEN): cg.Pieces {
         }
         
         let piece_id = parseInt(piece_str);
-        //alert("pos:" +  col + row);
-        //alert("role:" +  piece_id);
         pieces[pos2key([col, row])] = {
           role: Math.abs(piece_id),
           color: (piece_id < 0 ? 'white' : 'black') as cg.Color
@@ -55,7 +49,6 @@ export function read(fen: cg.FEN): cg.Pieces {
         col--;
         break;
       default:
-        //nb: 48 ~ 57 = 1 ~ 9
         const nb:number = fen.charCodeAt(p);
         const nb_s:string = fen.charAt(p);
         const nnb:number = fen.charCodeAt(p + 1);

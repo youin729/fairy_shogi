@@ -21,6 +21,13 @@ export interface SocketMove {
     b?: 1;
 }
 
+export interface SocketOpts {
+  ackable: boolean;
+  withLag?: boolean;
+  millis?: number | void;
+}
+
+
 export interface Untyped {
   [key: string]: any;
 }
@@ -43,8 +50,8 @@ export interface Step {
   uci: _.Uci;
   check?: boolean;
 }
-  
-export interface Round extends Step {
+
+export interface ApiMove extends Step {
     dests: EncodedDests;
     clock?: {
       white: Seconds;

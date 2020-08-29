@@ -11,6 +11,12 @@ npm install socket.io-client --save
 # typescript環境でloadするために必要
 npm install @types/socket.io-client --save
 
+#vueを入れる
+npm install @vue/cli ⇒やめた。
+
+#pugを入れる (expressのテンプレート用エンジン)
+npm install --save pug
+
 node index.js
 ⇒サーバー起動
 
@@ -63,3 +69,12 @@ css方針
 　フォーラムなど
 2カラムは
 　ロビー
+
+common.css ⇒ 汎用
+nav.css ⇒ 
+
+ラウンド中、検討中
+
+============================
+gameDataのinterfaceは別定義になってしまう？
+
