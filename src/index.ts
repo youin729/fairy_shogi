@@ -16,14 +16,15 @@ import * as promotion from './promotion';
 import * as multimove from './multimove';
 import { CHUSHOGI_PIECES as pieceData } from './pieces';
 
-declare var gameJson: any;
+declare var gameData: gi.Game;
+declare var initialFen: string;
 
 const socket = io();
 
 let text: string = "";
 
 /////////////////// example data 
-const g: gi.Game = gameJson
+var g: gi.Game = gameData //変更される値
 
 const player1: gi.Player = {
     id: "player1",
@@ -93,6 +94,7 @@ if(queryObject["p"] == 1){
         moretimeable: false,
     }
 }
+
 const rd: RoundOpts = {
     data: gd,
 }
@@ -112,7 +114,6 @@ export default class RoundController {
     constructor(readonly opts: RoundOpts) {
         this.data = opts.data;
         this.ply = this.lastPly(this.data);
-        alert(this.ply)
         this.clock = new ClockController(this.data, {
             onFlag: () => alert("game set"),//this.socket.outoftime,
             soundColor: this.data.player.spectator ? undefined : this.data.player.color,
@@ -160,8 +161,33 @@ export default class RoundController {
         //d.possibleMoves = activeColor ? o.dests : undefined; //自分の可能な移動先は、相手から送られてきたデータの中にある。
         //逆に自分のpremoveは送った時に作ればいい？
 
+        //時間処理
+        if(o.opts.millis){
+            const second = o.opts.millis / 1000;
+            if(d.game.player == 'white'){
+                this.data.clock.white = this.data.clock.white - second
+            } else if(d.game.player == 'black'){
+                this.data.clock.black = this.data.clock.black - second
+            }
+            /* else {
+                if(d.game.player == 'white'){
+                    this.data.clock.black = this.data.clock.black - second
+                    alert(this.data.clock.black)
+                } else if(d.game.player == 'black'){
+                    this.data.clock.white = this.data.clock.white - second
+                    alert(this.data.clock.white)
+                }
+            }
+            */
+        }
+
+        console.log(this.data.clock)
+
+
+
         if (!this.replaying()) {
             this.ply++; //手番を更新
+
             const keys = uci2move(o.uci);
             this.chessground.move(keys![0], keys![1]); //駒を動かす
         }
@@ -186,22 +212,20 @@ export default class RoundController {
         text = "現在" + this.ply + "手目で、" + d.game.player + "の手番です。<br>"
         text += "FEN:" + step.fen + "<br>"
         text += "uci：" + step.uci + "<br>"
-        text += "time(mill)"// + moveMillis
+        text += "time(mill)" + o.opts.millis
         document.getElementById("text-test").innerHTML = text;
         d.steps.push(step);
 
-/*
-    //時間を更新
-    if (o.clock) {
-      this.shouldSendMoveTime = true;
-      const oc = o.clock,
-        delay = (playing && activeColor) ? 0 : (oc.lag || 1);
-      if (this.clock) this.clock.setClock(d, oc.white, oc.black, delay);
-      else if (this.corresClock) this.corresClock.update(
-        oc.white,
-        oc.black);
-    }
-*/
+        //時間を更新
+        if (this.data.clock) {
+            /*
+            this.shouldSendMoveTime = true;
+            */
+            const oc = this.data.clock;
+            const delay = 0;
+            //    delay = (playing && activeColor) ? 0 : (oc.lag || 1);
+            this.clock.setClock(d, oc.white, oc.black, delay);
+        }
     }
 
     sendPromotion = (orig: cg.Key, dest: cg.Key, role: cg.Role, meta: cg.MoveMetadata): boolean => {
@@ -221,17 +245,18 @@ export default class RoundController {
 
     sendMove = (orig: cg.Key, dest: cg.Key, prom: cg.Role | undefined, meta: cg.MoveMetadata) => {
 
-        const move: SocketMove = {
-          u: orig + dest
-        };
+        const uci: string =  orig + dest;
+        const ply: number = this.data.game.turns;
         const opts: SocketOpts = {
             ackable: true
         };
+
         const moveMillis = this.clock.stopClock();
         if (moveMillis !== undefined /*&& this.shouldSendMoveTime*/) {
             opts.millis = moveMillis;
         }
-        const sendData = {move, opts}
+
+        const sendData = {uci, ply, opts}
         socket.emit('move', sendData);
     };
     
@@ -250,6 +275,7 @@ const ctrl: RoundController = new RoundController(rd);
 const hooks = ctrl.makeCgHooks();
 
 const config: Config = {
+    fen: initialFen,
     orientation: ctrl.data ? ctrl.data.player.color : "black",
     turnColor: ctrl.data ? ctrl.data.player.color : "black",
     pieceInfos: pieceData,

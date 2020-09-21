@@ -26,11 +26,6 @@ export function start(ctrl: RoundController, orig: cg.Key, dest: cg.Key, meta: c
       if(confirm("成りますか？")){
         return ctrl.sendPromotion(orig, dest, pieceData[piece.role].promote, meta);
       }
-      /*
-        if (prePromotionRole && meta && meta.premove){
-          return sendPromotion(ctrl, orig, dest, prePromotionRole, meta);
-        }
-      */
       promoting = {
         move: [orig, dest],
         pre: !!premovePiece,

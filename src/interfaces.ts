@@ -81,6 +81,8 @@ export interface ApiMove extends Step {
     };
     isMove?: true;
     isDrop?: true;
+
+    opts: any;
 }
 
 export type Position = 'top' | 'bottom';

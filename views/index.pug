@@ -84,15 +84,16 @@ html(lang='ja')
               span.rating 1500
         style.
           .rating{
-          font-weight:bold;
-          margin-left:10px;
+            font-weight:bold;
+            margin-left:10px;
           }
           .time{
-          background-color:#f0ffe9;
-          font-size:3.5rem;
-          letter-spacing: 0.05em;
-          padding: 0 0.3em;
+            background-color:#f0ffe9;
+            font-size:3.5rem;
+            letter-spacing: 0.05em;
+            padding: 0 0.3em;
           }
     script.
-      var gameJson=!{game};
+      var gameData=!{game};
+      var initialFen = "!{initialFen}";
     script(src='./dist/main.js')
