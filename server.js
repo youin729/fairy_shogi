@@ -3,7 +3,8 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-//const express = require('./app/module.js')
+const mail = require('./app/mail.js');
+const mysql = require('./app/mysql.js');
 
 app.set('view engine', 'pug');
 
@@ -11,6 +12,10 @@ app.set('view engine', 'pug');
 // routing
 app.get('/', function(req, res){
   res.render('index', { game: 'Hhageello' });
+});
+
+app.get('/lobby', function(req, res){
+  res.render('lobby');
 });
 
 //ゲームの黒番、白番が使用する。
@@ -37,13 +42,10 @@ app.get('/:gameId([a-zA-Z0-9]{8})', function(req, res){
   res.render('index', {game:JSON.stringify(game)});
 });
 
-
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/lobby.html');
-});
-
-app.get('/learn', function(req, res){
-  res.sendFile(__dirname + '/learn.html');
+app.get('/test', function(req, res){
+  //mail.mailSend();
+  mysql.mysqlConnect();
+  res.render('index', { game: 'Hhageello' });
 });
 
 //public
@@ -66,9 +68,9 @@ io.on('connection', (socket) => {
     console.log(msg)
     io.emit('move', msg);
   });
-  socket.on('chat message', (msg) => {
+  socket.on('chat', (msg) => {
     console.log(msg)
-    io.emit('chat message', msg);
+    io.emit('chat', msg);
   });
 });
 

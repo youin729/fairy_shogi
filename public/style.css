@@ -150,32 +150,22 @@ a{
       overflow: hidden;
   }
   
-
-
 .control{
     margin-left:20px;
 }
 .record {
-    border: 0;
     margin:20px 0;
-    border-radius: 6px;
     color: #333333;
     background: #fff;
     width: 100%;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-.record {
     position: relative;
     display: flex;
     flex-direction: column;
-    min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
     background-clip: border-box;
     border: 1px solid #eeeeee;
     border-radius: 0.25rem;
-}
-.record {
     font-size: .875rem;
 }
 .record .record-body {
@@ -183,6 +173,13 @@ a{
     min-height: 370px;
     overflow-y: scroll;
     position: relative;
+}
+
+/* ===================================================
+/* lobby
+/* ==================================================*/
+.game-board{
+    height: 400px;
 }
 
 /* ===================================================
@@ -196,6 +193,38 @@ a{
     border-radius: 0 0 3px 3px;
     vertical-align: top;
     background-color: #f1f1f1;
+}
+
+/* ===================================================
+/* lobby-chat
+/* ==================================================*/
+.chat {
+    margin:20px 0;
+    padding: 0.8rem;
+    color: #333333;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    font-size: .875rem;
+}
+.chat .chat-body {
+    min-height: 370px;
+    overflow-y: scroll;
+    position: relative;
+}
+.chat .chat-body p{
+    margin:0.5rem 0;
+}
+.chat form input[name='message-body']{
+    width: 95%;
+    line-height: 20px;
+}
+.chat form button{
+    width:5%;
 }
 /* ===================================================
 /* board

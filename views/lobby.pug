@@ -1,0 +1,45 @@
+doctype html
+html(lang='ja')
+  include _head.pug
+  body
+    include _sidebar.pug
+    main.two-column
+      .lobby
+        .game-board
+          table.game-list.lobby
+            thead
+              tr
+                th
+                th プレイヤー
+                th.sortable.sort
+                  i.is レーティング
+                th.sortable
+                  i.is 時間
+                th モード
+              tbody
+                tr.hook.join(title="対局に参加する | Rapid" data-id="IULbSWie")
+                  td
+                    span.is.is2.color-icon.white
+                  td
+                    span.ulink(data-href="/@/sharkawy2") sharkawy2
+                  td 1888
+                  td 10+0
+                  td
+                    span(data-icon="#") 非レート戦
+        
+        .chat
+          #lobby-chat.chat-body
+          form#chat
+            input(type="hidden", name="user-id" value="22")
+            input(type="text", name="message-body" id="chat-message-body" value="" placeholder="チャットの際は礼儀を心がけましょう")
+            button(type="submit" id="chat-send") 送信
+
+      aside
+        .profile
+          .profile-main
+            .profile-image
+              img(width="40" height="40" src="./public/demo/user2.png" alt="プレイヤー2")
+            .user-tagline
+              span プレイヤー2
+              
+    script(src='./dist/chat.js')

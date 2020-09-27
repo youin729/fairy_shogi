@@ -6,8 +6,11 @@ module.exports = {
     mode: 'development',
   
     // メインとなるJavaScriptファイル（エントリーポイント）
-    entry: './src/index.ts',
-  
+    entry: {
+      main: './src/index.ts',
+      chat: './chat/index.ts',
+      mail: './src/mail/mail.ts',
+    },
     module: {
       rules: [
         {

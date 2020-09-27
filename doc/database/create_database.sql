@@ -1,0 +1,9 @@
+
+db_name:alt_shogi
+user:alt_shogi
+db_pass:#wx%weX;K2
+
+CREATE DATABASE `este` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE USER 'este'@'localhost' IDENTIFIED BY 'Nrhj8B$n)E';
+GRANT ALL PRIVILEGES ON `este`.* TO 'este'@'localhost' IDENTIFIED BY 'Nrhj8B$n)E' WITH GRANT OPTION MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+

@@ -1,6 +1,13 @@
 npm init
 # express install
 npm install express --save
+npm install --save express-session
+
+# mailserver
+npm install nodemailer -save
+
+#mysql
+npm install mysql -save
 
 # socket.io install
 npm install socket.io --save
@@ -11,11 +18,10 @@ npm install socket.io-client --save
 # typescript環境でloadするために必要
 npm install @types/socket.io-client --save
 
-#vueを入れる
-npm install @vue/cli ⇒やめた。
-
 #pugを入れる (expressのテンプレート用エンジン)
 npm install --save pug
+
+
 
 node index.js
 ⇒サーバー起動
@@ -27,6 +33,8 @@ $ heroku create
 $ git push heroku master
 $ heroku open
 
+rootパスワード
+Du!yn!d8_$
 
 ---------------------
 
@@ -78,3 +86,7 @@ nav.css ⇒
 ============================
 gameDataのinterfaceは別定義になってしまう？
 
+
+expressで会員登録できるようにする。
+
+DB接続
