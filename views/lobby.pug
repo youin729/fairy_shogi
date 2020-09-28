@@ -35,11 +35,19 @@ html(lang='ja')
             button(type="submit" id="chat-send") 送信
 
       aside
-        .profile
-          .profile-main
-            .profile-image
-              img(width="40" height="40" src="./public/demo/user2.png" alt="プレイヤー2")
-            .user-tagline
-              span プレイヤー2
+        .lobby-menu 
+          if is_login
+            .profile
+              .profile-main
+                .profile-image
+                  img(width="40" height="40" src="./public/demo/user2.png" alt="プレイヤー2")
+                .user-tagline
+                  span プレイヤー2
+          else 
+            .start
+              a(href="/signup" class="button") 新規登録
+              a(href="/signin" class="button") ログイン
+              a(href="/setup/auto" class="button") 対局を作成する
+              a(href="/setup/friend" class="button") 友達と対局する
               
     script(src='./dist/chat.js')

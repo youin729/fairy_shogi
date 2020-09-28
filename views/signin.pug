@@ -1,0 +1,17 @@
+doctype html
+html(lang='ja')
+  include _head.pug
+  body
+    include _sidebar.pug
+    main.one-column
+      .card
+        h2 ログイン
+        form(method="POST" action="/signin")
+          .form-group
+            label ユーザー名またはメールアドレス
+            input(type="text" name="name" class="line")
+          .form-group
+            label パスワード
+            input(type="password" name="password" class="line")
+          .form-button
+            button(type="submit" class="btn btn-primary") ログイン

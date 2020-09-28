@@ -1,12 +1,22 @@
 const express = require('express')
+const crypto = require('crypto')
 const app = express();
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 const mail = require('./app/mail.js');
+
+/////////////////////////////////////////////
 const mysql = require('./app/mysql.js');
+mysql.connect();
 
 app.set('view engine', 'pug');
+
+/////////////////////////////////////////////
+var DEF_URL = "http://localhost:3000/";
 
 /////////////////////////////////////////////
 // routing
@@ -16,6 +26,38 @@ app.get('/', function(req, res){
 
 app.get('/lobby', function(req, res){
   res.render('lobby');
+});
+
+app.get('/signin', function(req, res){
+  res.render('signin');
+});
+
+app.post('/signin', function(req, res){
+  console.log(req.body)
+});
+
+app.get('/signup', function(req, res){
+  res.render('signup');
+});
+
+app.post('/signup', function(req, res){
+  let pre_user = req.body
+  pre_user.code = makeRandStr();
+  mysql.insert('pre_users', pre_user);
+
+  const message = {
+    to: pre_user.email,
+    subject: '【ALTShogi】仮会員登録確認',
+    text: "こんにちは、" + pre_user.name + "さん\nALTShogiの利用を始めるには、下記のリンクから本会員登録に進んでください。\n\n" + DEF_URL + "signup/" + pre_user.code,
+  }
+
+  mail.send(message)
+  res.render('signup-result');
+});
+
+app.get('/signup/:code([a-zA-Z0-9]{16})', function(req, res){
+  //console.log(req.params.code)
+  res.render('signup-result');
 });
 
 //ゲームの黒番、白番が使用する。
@@ -75,3 +117,13 @@ io.on('connection', (socket) => {
 });
 
 http.listen(process.env.PORT || 3000);
+
+//任意桁のランダム文字列を作成
+function makeRandStr(n) {
+  if(!n) n=16
+  const s="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  return Array.from(crypto.randomFillSync(new Uint8Array(n))).map((n)=>s[n%s.length]).join('')
+}
+
+
+

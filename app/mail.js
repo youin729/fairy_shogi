@@ -1,10 +1,12 @@
 const nodemailer = require("nodemailer");
+
+const DEF_address = 'akasaka16x16@gmail.com';
 const smtpConfig = {
     host: 'smtp.gmail.com',
     port: 465,
     secure: true, // SSL
     auth: {
-        user: 'akasaka16x16@gmail.com',
+        user: DEF_address,
         pass: 'chushogi12'
     }
 };
@@ -12,18 +14,26 @@ const smtpConfig = {
 //SMTPサーバの設定
 const smtp = nodemailer.createTransport(smtpConfig);
 
-//メール情報の作成
-const test_message = {
-    from: 'akasaka16x16@gmail.com',
-    to: 'you.in729@gmail.com',
-    subject: 'nodemailer test mail',
-    text: 'テストメールです。'
-};
 
 // メール送信
-exports.mailSend = function mailSend(){
+/*
+message = {
+    from: string // from@example.com,
+    to: string // to@example.com,
+    subject: string,
+    text: string
+};
+*/
+exports.send = function mailSend(message){
+    if(!message.to || !message.subject || !message.text){
+        return false;
+    }
+    if(!message.from){
+        message.from = DEF_address;
+    }
+
     try{
-        smtp.sendMail(test_message, function(error, info){
+        smtp.sendMail(message, function(error, info){
             // エラー発生時
             if(error){
                 console.log("send failed");
