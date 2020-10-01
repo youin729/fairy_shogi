@@ -81,20 +81,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./chat/index.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./lobby/index.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./chat/index.ts":
-/*!***********************!*\
-  !*** ./chat/index.ts ***!
-  \***********************/
+/***/ "./lobby/index.ts":
+/*!************************!*\
+  !*** ./lobby/index.ts ***!
+  \************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ \"./node_modules/socket.io-client/lib/index.js\");\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);\n\r\nvar socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0__();\r\ndocument.getElementById(\"chat-send\").onclick = function () {\r\n    var bodyEl = document.getElementById(\"chat-message-body\");\r\n    var sendData = {\r\n        userId: 22,\r\n        Message: bodyEl.value,\r\n    };\r\n    socket.emit('chat', sendData);\r\n    bodyEl.value = \"\";\r\n    return false;\r\n};\r\nsocket.on('chat', function (c) {\r\n    var newEl = document.createElement(\"p\");\r\n    newEl.innerHTML = \"ユーザー\" + c.userId + \"：\" + c.Message;\r\n    var chatEl = document.getElementById(\"lobby-chat\");\r\n    chatEl.insertBefore(newEl, chatEl.getElementsByTagName(\"p\")[1]);\r\n});\r\n\n\n//# sourceURL=webpack:///./chat/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! socket.io-client */ \"./node_modules/socket.io-client/lib/index.js\");\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_0__);\n\r\nvar socket = socket_io_client__WEBPACK_IMPORTED_MODULE_0__('/lobby');\r\ndocument.getElementById(\"chat-send\").onclick = function () {\r\n    var bodyEl = document.querySelector(\"#chat-message-body\");\r\n    var idEl = document.getElementById(\"chat-id\");\r\n    var nameEl = document.getElementById(\"chat-name\");\r\n    var sendData = {\r\n        userId: parseInt(idEl.value),\r\n        userName: nameEl.value,\r\n        Message: bodyEl.value,\r\n    };\r\n    socket.emit('chat', sendData);\r\n    bodyEl.value = \"\";\r\n    return false;\r\n};\r\ndocument.getElementById(\"game-create\").onsubmit = function () {\r\n    var formEl = document.forms['game-create'];\r\n    var uid = formEl.elements['user-id'].value, uname = formEl.elements['user-name'].value, color = formEl.elements['color'].value, initial = formEl.elements['initial'].value, timerule = formEl.elements['timerule'].value, increment = formEl.elements['increment'].value, countdown = formEl.elements['countdown'].value;\r\n    var preGame = {\r\n        userId: uid,\r\n        userName: uname,\r\n        color: color,\r\n        initial: initial,\r\n        timerule: timerule,\r\n        increment: increment,\r\n        countdown: countdown,\r\n    };\r\n    console.log(preGame);\r\n    socket.emit('create', preGame);\r\n    return false;\r\n};\r\nsocket.emit('connected', function (socket) {\r\n    socket.join('default');\r\n});\r\nsocket.on('chat', function (c) {\r\n    var newEl = document.createElement(\"p\");\r\n    newEl.innerHTML = c.userName + \"：\" + c.Message;\r\n    var chatEl = document.querySelector(\"#lobby_chat\");\r\n    chatEl.insertBefore(newEl, chatEl.getElementsByTagName(\"p\")[1]);\r\n});\r\n/*\r\nvar systemText = document.querySelector(\"#system_text\");\r\nsocket.on(\"start typing\", function(typinguser){\r\n    systemText.innerHTML += typinguser + 'が入力中';\r\n});\r\nsocket.on(\"stop typing\", function(){\r\n    systemText.innerHTML = \"\";\r\n});\r\n*/ \r\n\n\n//# sourceURL=webpack:///./lobby/index.ts?");
 
 /***/ }),
 

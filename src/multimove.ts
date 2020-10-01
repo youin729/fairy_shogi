@@ -23,6 +23,7 @@ export function start(ctrl: RoundController, orig: cg.Key, dest: cg.Key): boolea
       if(diff_x <= 1 && diff_y <= 1){
         ctrl.chessground.state.multimove = true;
         ctrl.chessground.setMultipleMove(dest);
+        ctrl.multimove_uci = orig + dest;
         return true;
       }
     }

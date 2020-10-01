@@ -1,17 +1,34 @@
 const express = require('express')
 const crypto = require('crypto')
 const app = express();
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http); 
 
 const mail = require('./app/mail.js');
 
 /////////////////////////////////////////////
-const mysql = require('./app/mysql.js');
-mysql.connect();
+// database
+const app_mysql = require('./app/mysql.js');
+app_mysql.connect();
+
+/////////////////////////////////////////////
+// session
+const session = require('express-session');
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie:
+    {
+      httpOnly: true,
+      secure: false,
+      maxage: 1000 * 60 * 30
+    }
+}));
 
 app.set('view engine', 'pug');
 
@@ -21,11 +38,15 @@ var DEF_URL = "http://localhost:3000/";
 /////////////////////////////////////////////
 // routing
 app.get('/', function(req, res){
-  res.render('index', { game: 'Hhageello' });
+  const my_session = {
+    my_id: req.session.userid,
+    my_name: req.session.username,
+  }
+  res.render('lobby', my_session);
 });
 
-app.get('/lobby', function(req, res){
-  res.render('lobby');
+app.get('/error', function(req, res){
+  res.render('error');
 });
 
 app.get('/signin', function(req, res){
@@ -33,7 +54,20 @@ app.get('/signin', function(req, res){
 });
 
 app.post('/signin', function(req, res){
-  console.log(req.body)
+  const cond = {
+    password: req.body.password,
+  }
+  const raw = " AND email LIKE '"+ req.body.name +"' OR name LIKE '"+ req.body.name +"' LIMIT 1";
+
+  app_mysql.select(`users`, cond, raw, function(result){
+    if(!result[0]){
+      res.redirect('/error');
+    } else {
+      req.session.userid = result[0].id;
+      req.session.username = result[0].name;
+      res.redirect('/');
+    }
+  })
 });
 
 app.get('/signup', function(req, res){
@@ -43,22 +77,36 @@ app.get('/signup', function(req, res){
 app.post('/signup', function(req, res){
   let pre_user = req.body
   pre_user.code = makeRandStr();
-  mysql.insert('pre_users', pre_user);
+  app_mysql.insert('pre_users', pre_user);
 
   const message = {
     to: pre_user.email,
     subject: '【ALTShogi】仮会員登録確認',
     text: "こんにちは、" + pre_user.name + "さん\nALTShogiの利用を始めるには、下記のリンクから本会員登録に進んでください。\n\n" + DEF_URL + "signup/" + pre_user.code,
   }
-
   mail.send(message)
   res.render('signup-result');
 });
 
 app.get('/signup/:code([a-zA-Z0-9]{16})', function(req, res){
-  //console.log(req.params.code)
-  res.render('signup-result');
+  const cond = {
+    code: req.params.code,
+  }
+  const raw = '' //'AND created_at >= (CURRENT_TIMESTAMP - INTERVAL 1 HOUR) LIMIT 1';
+  
+  app_mysql.select(`pre_users`, cond, raw, function(result){
+    if(!result[0]){
+      res.redirect('/error');
+    } else {
+      // todo. 本会員登録処理
+      // todo. 文字列暗号化
+      res.render('signup-result');
+    }
+  })
 });
+
+/////////////////////////////////////////////
+// game routing
 
 //ゲームの黒番、白番が使用する。
 app.get('/:gameId([a-zA-Z0-9]{12})', function(req, res){
@@ -84,40 +132,81 @@ app.get('/:gameId([a-zA-Z0-9]{8})', function(req, res){
   res.render('index', {game:JSON.stringify(game)});
 });
 
-app.get('/test', function(req, res){
-  //mail.mailSend();
-  mysql.mysqlConnect();
-  res.render('index', { game: 'Hhageello' });
-});
-
 //public
 app.use('/public', express.static('public'));
 app.use('/dist', express.static('dist'));
 
 /////////////////////////////////////////////
 // socket
-io.on('connection', (socket) => {
-  socket.on('move', (msg) => {
+const userHash = {};
 
-/* サーバー側で
-　plyの管理 (インクリメント) ⇒ 済？
-　時間の管理 (increment?) ⇒ 済？
-　fenの生成
-　sanの生成
-　動きの生成
-*/  
+const chatNS = io.of('/lobby');
+chatNS.on("connection", function(socket){
+
+	var roomName = "default";
+	socket.join(roomName);
+
+	socket.on("connected", function(name){
+		var msg = name + "が入室しました";
+    userHash[socket.id] = name;
+    //console.log(msg)
+		chatNS.to(roomName).emit("pushlish", {value: msg});
+	});
+
+  //メッセージ送信
+	socket.on("chat", function(data){
+    console.log(data)
+		chatNS.to(roomName).emit("chat", data);
+	});
+
+  //ゲーム作成
+	socket.on("create", function(data){
+    console.log(data)
+    const pre_game = {
+      hash: makeRandStr(12),
+      initial: data.initial,
+      increment: data.timerule == "increment" ? data.increment : null,
+      countdown: data.timerule == "countdown" ? data.countdown : null,
+      tackbackable: false,
+      moretimeable: false,
+    }
+    if(data.color == "black"){
+      pre_game.black_user_id = data.userId,
+      pre_game.black_user_name = data.userName
+    } else if(data.color == "white"){
+      pre_game.white_user_id = data.userId,
+      pre_game.white_user_name = data.userName
+    } else {
+      //todo. あとでランダムにする。
+      pre_game.black_user_id = data.userId,
+      pre_game.black_user_name = data.userName
+    }
+
+    app_mysql.insert('pre_games', pre_game);
+  
+		//chatNS.to(roomName).emit("chat", data);
+  });
+  
+	// 接続終了組み込みイベント
+	socket.on("disconnect", function(){
+		if(userHash[socket.id]){
+			var msg = userHash[socket.id] + "が退出しました";
+			delete userHash[socket.id];
+			chatNS.to(roomName).emit("publish", {value: msg});
+		}
+	});
+});
+
+const gameNS = io.of('/game');
+gameNS.on('connection', (socket) => {
+  socket.on('move', (msg) => {
     msg.ply ++;
     console.log(msg)
-    io.emit('move', msg);
-  });
-  socket.on('chat', (msg) => {
-    console.log(msg)
-    io.emit('chat', msg);
+    gameNS.emit('move', msg);
   });
 });
 
-http.listen(process.env.PORT || 3000);
-
+/////////////////////////////////////////////
 //任意桁のランダム文字列を作成
 function makeRandStr(n) {
   if(!n) n=16
@@ -125,5 +214,7 @@ function makeRandStr(n) {
   return Array.from(crypto.randomFillSync(new Uint8Array(n))).map((n)=>s[n%s.length]).join('')
 }
 
+
+http.listen(process.env.PORT || 3000);
 
 

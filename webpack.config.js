@@ -8,8 +8,7 @@ module.exports = {
     // メインとなるJavaScriptファイル（エントリーポイント）
     entry: {
       main: './src/index.ts',
-      chat: './chat/index.ts',
-      mail: './src/mail/mail.ts',
+      chat: './lobby/index.ts',
     },
     module: {
       rules: [

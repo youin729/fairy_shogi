@@ -30,24 +30,62 @@ html(lang='ja')
         .chat
           #lobby-chat.chat-body
           form#chat
-            input(type="hidden", name="user-id" value="22")
+            if my_id
+              p !{my_id}
+              input(type="hidden", name="user-id" id="chat-id" value=`${my_id}`)
+              input(type="hidden", name="user-name" id="chat-name" value=`${my_name}`)
+            else
+              input(type="hidden", name="user-id" id="chat-id" value="0")
+              input(type="hidden", name="user-name" id="chat-name" value="anonymous")
+
             input(type="text", name="message-body" id="chat-message-body" value="" placeholder="チャットの際は礼儀を心がけましょう")
             button(type="submit" id="chat-send") 送信
 
       aside
         .lobby-menu 
-          if is_login
+          if my_id
             .profile
               .profile-main
-                .profile-image
-                  img(width="40" height="40" src="./public/demo/user2.png" alt="プレイヤー2")
                 .user-tagline
-                  span プレイヤー2
+                  span !{my_name}
+            .start
+              a(href="/setup/auto" class="button") 対局を作成する
+              a(href="/setup/friend" class="button") 友達と対局する
+            .game-create
+              form(id="game-create" name="game-create")
+                input(type="hidden" name="user-id" value=`${my_id}`)
+                input(type="hidden" name="user-name" value=`${my_name}`)
+                label 先手/後手
+                select(name="color")
+                  option(value="random") ランダム
+                  option(value="black") 先手
+                  option(value="white") 後手
+                select(name="timerule")
+                  option(value="countdown") 秒読み
+                  option(value="increment") フィッシャー
+                select(name="initial")
+                  option(value="600") 10分
+                  option(value="1200") 20分
+                select(name="increment")
+                  option(value="0") 0秒
+                  option(value="5") 5秒
+                  option(value="10") 10秒
+                  option(value="15") 15秒
+                  option(value="20") 20秒
+                  option(value="30") 30秒
+                  option(value="60") 60秒
+                select(name="countdown")
+                  option(value="0") 0秒
+                  option(value="10") 10秒
+                  option(value="15") 15秒
+                  option(value="20") 20秒
+                  option(value="30") 30秒
+                  option(value="60") 60秒
+                button(type="submit" class="btn btn-primary") 対局を作成
           else 
             .start
               a(href="/signup" class="button") 新規登録
               a(href="/signin" class="button") ログイン
               a(href="/setup/auto" class="button") 対局を作成する
-              a(href="/setup/friend" class="button") 友達と対局する
               
     script(src='./dist/chat.js')

@@ -19,7 +19,7 @@ import { CHUSHOGI_PIECES as pieceData } from './pieces';
 declare var gameData: gi.Game;
 declare var initialFen: string;
 
-const socket = io();
+const socket = io('/game');
 
 let text: string = "";
 
@@ -109,6 +109,7 @@ export default class RoundController {
     chessground: CgApi;
     data: RoundData;
     ply: number;
+    multimove_uci: string;
     clock?: ClockController;
 
     constructor(readonly opts: RoundOpts) {
@@ -187,7 +188,11 @@ export default class RoundController {
 
         if (!this.replaying()) {
             this.ply++; //手番を更新
-
+            if(checkUciMulti(o.uci)){
+                //2手移動の1手目を動かす
+                const keys = uci2move(o.uci);
+                this.chessground.move(keys![0], keys![1]); //駒を動かす
+            }
             const keys = uci2move(o.uci);
             this.chessground.move(keys![0], keys![1]); //駒を動かす
         }
@@ -245,7 +250,13 @@ export default class RoundController {
 
     sendMove = (orig: cg.Key, dest: cg.Key, prom: cg.Role | undefined, meta: cg.MoveMetadata) => {
 
-        const uci: string =  orig + dest;
+        let uci: string = "";
+        if(this.multimove_uci){
+            uci = this.multimove_uci + dest;
+            this.multimove_uci = "";
+        } else {
+            uci = orig + dest;
+        }
         const ply: number = this.data.game.turns;
         const opts: SocketOpts = {
             ackable: true
@@ -300,15 +311,29 @@ ctrl.setChessground(Chessground(document.getElementById("app"), config))
 export function uci2move(uci: string): cg.Key[] | undefined {
     if (!uci) return undefined;
     //if (uci[1] === '@') return [uci.slice(2, 4) as cg.Key];
-    if(uci.charCodeAt(2) < 57){ //isnumber?
+
+    //1手移動の場合
+    if(uci.charCodeAt(2) < 58){ //2文字目が数字の場合：移動元はc10などの符号
         return [uci.slice(0, 3), uci.slice(3)] as cg.Key[];
     } else {
         return [uci.slice(0, 2), uci.slice(2)] as cg.Key[];
+    }
+
+}
+
+//2手移動かどうかをチェックする。
+//uciが6文字以下であることかつ、4文字目が数字でなければ、1手移動。
+export function checkUciMulti(uci: string): boolean {
+    if(uci.length <= 6 || !(uci.charCodeAt(2) < 58)){
+        return false;
+    } else {
+        return true;
     }
 }
 
 // 手を送信したときにも、receiveする。
 // したがって、送信時、受信時に動作し、引数のoはサーバー側で管理される。
 socket.on('move', function(o){
+    console.log(o)
     ctrl.apiMove(o);
 });
