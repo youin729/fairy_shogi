@@ -33,9 +33,6 @@ $ heroku create
 $ git push heroku master
 $ heroku open
 
-rootパスワード
-Du!yn!d8_$
-
 ---------------------
 
 盤や駒種類を変更する場合
